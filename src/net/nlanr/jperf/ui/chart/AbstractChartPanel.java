@@ -19,6 +19,10 @@ import org.jfree.chart.JFreeChart;
 
 public abstract class AbstractChartPanel extends JPanel
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6818659991029126126L;
 	protected JFreeChart	jFreeChart;
 	protected ChartPanel	chartPanel;
 

@@ -211,8 +211,7 @@ public class IperfThread extends Thread
 			String[] results = p.split(line);
 
 			// get the ID # for the stream
-			Integer temp = new Integer(results[1].trim());
-			int id = temp.intValue();
+			int id = Integer.parseInt(results[1].trim());
 
 			boolean found = false;
 			JperfStreamResult streamResult = new JperfStreamResult(id);
@@ -233,25 +232,25 @@ public class IperfThread extends Thread
 			// this is TCP or Client UDP
 			if (results.length == 9)
 			{
-				Double start = new Double(results[2].trim());
-				Double end = new Double(results[3].trim());
-				Double bw = new Double(results[7].trim());
+				Double start = Double.parseDouble(results[2].trim());
+				Double end = Double.parseDouble(results[3].trim());
+				Double bw = Double.parseDouble(results[7].trim());
 				
-				Measurement M = new Measurement(start.doubleValue(), end.doubleValue(), bw.doubleValue(), results[8]);
+				Measurement M = new Measurement(start, end, bw, results[8]);
 				streamResult.addBW(M);
 				frame.addNewStreamBandwidthMeasurement(id, M);
 			}
 			else if (results.length == 14)
 			{
-				Double start = new Double(results[2].trim());
-				Double end = new Double(results[3].trim());
-				Double bw = new Double(results[7].trim());
-
-				Measurement B = new Measurement(start.doubleValue(), end.doubleValue(), bw.doubleValue(), results[7]);
+				double start = Double.parseDouble(results[2].trim());
+				double end = Double.parseDouble(results[3].trim());
+				double bw = Double.parseDouble(results[7].trim());
+				
+				Measurement B = new Measurement(start, end, bw, results[7]);
 				streamResult.addBW(B);
 
-				Double jitter = new Double(results[9].trim());
-				Measurement J = new Measurement(start.doubleValue(), end.doubleValue(), jitter.doubleValue(), results[10]);
+				double jitter = Double.parseDouble(results[9].trim());
+				Measurement J = new Measurement(start, end, jitter, results[10]);
 				streamResult.addJitter(J);
 				frame.addNewStreamBandwidthAndJitterMeasurement(id, B, J);
 			}

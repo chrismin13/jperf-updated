@@ -21,6 +21,10 @@ import org.jdesktop.swingx.JXBusyLabel;
 
 public class JPerfWaitWindow extends JDialog
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1495545726320555073L;
 	private JFrame parent;
 	
 	public JPerfWaitWindow(JFrame parent)

@@ -97,7 +97,7 @@ public class FormLayoutBuilder
 			newLine();
 		}
 		currentLineCells.add(component);
-		componentsColSpan.put(component, new Integer(colSpan));
+		componentsColSpan.put(component, colSpan);
 	}
 	
 	public void newLine()

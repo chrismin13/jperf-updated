@@ -37,6 +37,10 @@ import net.nlanr.jperf.JPerf;
 
 public class JPerfAboutPanel extends JPanel 
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4387421127535857404L;
 	private String version;
 	
 	public JPerfAboutPanel(String version)

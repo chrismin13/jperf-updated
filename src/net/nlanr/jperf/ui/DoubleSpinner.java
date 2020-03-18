@@ -15,14 +15,18 @@ import javax.swing.SpinnerNumberModel;
 
 public class DoubleSpinner extends JSpinner
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3008315942240067938L;
 	private SpinnerNumberModel spinnerNumberModel = new SpinnerNumberModel();
 	
 	public DoubleSpinner(double min, double max, double step, double initialValue)
 	{
-		spinnerNumberModel.setValue(new Double(initialValue));
-		spinnerNumberModel.setStepSize(new Double(step));
-		spinnerNumberModel.setMaximum(new Double(max));
-		spinnerNumberModel.setMinimum(new Double(min));
+		spinnerNumberModel.setValue(initialValue);
+		spinnerNumberModel.setStepSize(step);
+		spinnerNumberModel.setMaximum(max);
+		spinnerNumberModel.setMinimum(min);
 		
 		this.setModel(spinnerNumberModel);
 	}

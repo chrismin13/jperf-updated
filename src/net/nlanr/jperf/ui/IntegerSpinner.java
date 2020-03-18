@@ -17,14 +17,18 @@ import javax.swing.SpinnerNumberModel;
 
 public class IntegerSpinner extends JSpinner
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7837385277380591799L;
 	private SpinnerNumberModel spinnerNumberModel = new SpinnerNumberModel();
 	
 	public IntegerSpinner(int min, int max, int step, int initialValue)
 	{
-		spinnerNumberModel.setValue(new Integer(initialValue));
-		spinnerNumberModel.setStepSize(new Integer(step));
-		spinnerNumberModel.setMaximum(new Integer(max));
-		spinnerNumberModel.setMinimum(new Integer(min));
+		spinnerNumberModel.setValue(initialValue);
+		spinnerNumberModel.setStepSize(step);
+		spinnerNumberModel.setMaximum(max);
+		spinnerNumberModel.setMinimum(min);
 		
 		this.setModel(spinnerNumberModel);
 		this.setPreferredSize(new Dimension(120, 20));

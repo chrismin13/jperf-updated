@@ -68,6 +68,11 @@ import static net.nlanr.jperf.core.IPerfProperties.*;
 public class JPerfUI extends JFrame
 	implements ActionListener, KeyListener, ChangeListener, WindowListener
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6166145321018710000L;
+
 	private JPerfAboutPanel	aboutPanel;
 
 	// Menu stuff
@@ -96,35 +101,35 @@ public class JPerfUI extends JFrame
 	private JRadioButton			tcpRadioButton, udpRadioButton;
 	private JCheckBox					lb_tcpBufferLength;
 	private DoubleSpinner	tcpBufferLength;
-	private JComboBox					tcpBufferSizeUnit;
+	private JComboBox<?>					tcpBufferSizeUnit;
 	private JCheckBox					lb_tcpWindowSize;
 	private DoubleSpinner	tcpWindowSize;
-	private JComboBox					tcpWindowSizeUnit;
+	private JComboBox<?>					tcpWindowSizeUnit;
 	private JCheckBox					lb_mss;
 	private DoubleSpinner	mss;
-	private JComboBox					mssUnit;
+	private JComboBox<?>					mssUnit;
 	private JCheckBox					lb_udpBufferSize;
 	private DoubleSpinner	udpBufferSize;
-	private JComboBox					udpBufferSizeUnit;
+	private JComboBox<?>					udpBufferSizeUnit;
 	private JCheckBox					lb_udpPacketSize;
 	private DoubleSpinner	udpPacketSize;
-	private JComboBox					udpPacketSizeUnit;
+	private JComboBox<?>					udpPacketSizeUnit;
 	private JLabel						lb_udpBandwidth;
 	private DoubleSpinner	udpBandwidth;
-	private JComboBox					udpBandwidthUnit;
+	private JComboBox<?>					udpBandwidthUnit;
 	private JCheckBox					tcpNoDelay;
 
 	// ip parameters
 	private JLabel						lb_bindHost, lb_TTL;
 	private JTextField				bindhost;
 	private IntegerSpinner	TTL;
-	private JComboBox					tos;
+	private JComboBox<?>					tos;
 
 	// other parameters
 	private JCheckBox					printMSS;
 	private JTextField				representativeFile;
 	private IntegerSpinner	transmit;
-	private JComboBox					formatList;
+	private JComboBox<?>					formatList;
 	private IntegerSpinner	interval;
 	private ButtonGroup				iperfModeButtonGroup;
 	private ButtonGroup				protocolButtonGroup;
@@ -169,9 +174,9 @@ public class JPerfUI extends JFrame
 		String[] version_split = version.split(" ");
 		String vers = version_split[2].replace('.', '-');
 		String[] version_num = vers.split("-");
-		iperfVersion = (new Float(version_num[1])).floatValue();
+		iperfVersion = (Float.parseFloat(version_num[1]));
 		iperfVersion /= 10.0;
-		iperfVersion += (new Float(version_num[0])).floatValue();
+		iperfVersion += (Float.parseFloat(version_num[0]));
 
 		// set up main panels
 		init();
@@ -567,7 +572,7 @@ public class JPerfUI extends JFrame
 			// output format
 			lb_outputFormat = new JLabel("Output Format");
 			lb_outputFormat.setToolTipText("Format to print bandwidth numbers in. Adaptive formats choose between kilo- and mega-   (command line: -f)");
-			formatList = new JComboBox(IperfUnit.getAllowedOutputFormatUnits());
+			formatList = new JComboBox<Object>(IperfUnit.getAllowedOutputFormatUnits());
 			formatList.addActionListener(this);
 			formatList.setSelectedItem(IperfUnit.KBITS);
 			applicationForm.addCell(lb_outputFormat);
@@ -726,7 +731,7 @@ public class JPerfUI extends JFrame
 			tcpBufferLength = new DoubleSpinner(1, 9999, 8);
 			tcpBufferLength.addChangeListener(this);
 			tcpForm.addCell(tcpBufferLength);
-			tcpBufferSizeUnit = new JComboBox(IperfUnit.getAllowedBufferSizeUnits());
+			tcpBufferSizeUnit = new JComboBox<Object>(IperfUnit.getAllowedBufferSizeUnits());
 			tcpBufferSizeUnit.addActionListener(this);
 			tcpBufferSizeUnit.setSelectedItem(IperfUnit.KBYTES);
 			tcpForm.addCell(tcpBufferSizeUnit);
@@ -741,7 +746,7 @@ public class JPerfUI extends JFrame
 			tcpWindowSize = new DoubleSpinner(1, 9999, 8);
 			tcpWindowSize.addChangeListener(this);
 			tcpForm.addCell(tcpWindowSize);
-			tcpWindowSizeUnit = new JComboBox(IperfUnit.getAllowedTCPWindowSizeUnits());
+			tcpWindowSizeUnit = new JComboBox<Object>(IperfUnit.getAllowedTCPWindowSizeUnits());
 			tcpWindowSizeUnit.addActionListener(this);
 			tcpWindowSizeUnit.setSelectedItem(IperfUnit.KBYTES);
 			tcpForm.addCell(tcpWindowSizeUnit);
@@ -756,7 +761,7 @@ public class JPerfUI extends JFrame
 			mss = new DoubleSpinner(1, 9999, 8);
 			mss.addChangeListener(this);
 			tcpForm.addCell(mss);
-			mssUnit = new JComboBox(IperfUnit.getAllowedTCPMaxSegmentSizeUnits());
+			mssUnit = new JComboBox<Object>(IperfUnit.getAllowedTCPMaxSegmentSizeUnits());
 			mssUnit.addActionListener(this);
 			mssUnit.setSelectedItem(IperfUnit.KBYTES);
 			tcpForm.addCell(mssUnit);
@@ -814,7 +819,7 @@ public class JPerfUI extends JFrame
 			udpBandwidth = new DoubleSpinner(1, 9999, 1);
 			udpBandwidth.addChangeListener(this);
 			udpForm.addCell(udpBandwidth);
-			udpBandwidthUnit = new JComboBox(IperfSpeedUnit.values());
+			udpBandwidthUnit = new JComboBox<Object>(IperfSpeedUnit.values());
 			udpBandwidthUnit.addActionListener(this);
 			udpBandwidthUnit.setSelectedItem(IperfSpeedUnit.MEGABITS_PERSEC);
 			udpForm.addCell(udpBandwidthUnit);
@@ -829,7 +834,7 @@ public class JPerfUI extends JFrame
 			udpBufferSize = new DoubleSpinner(1, 9999, 8);
 			udpBufferSize.addChangeListener(this);
 			udpForm.addCell(udpBufferSize);
-			udpBufferSizeUnit = new JComboBox(IperfUnit.getAllowedBufferSizeUnits());
+			udpBufferSizeUnit = new JComboBox<Object>(IperfUnit.getAllowedBufferSizeUnits());
 			udpBufferSizeUnit.addActionListener(this);
 			udpBufferSizeUnit.setSelectedItem(IperfUnit.KBYTES);
 			udpForm.addCell(udpBufferSizeUnit);
@@ -844,7 +849,7 @@ public class JPerfUI extends JFrame
 			udpPacketSize = new DoubleSpinner(1, 9999, 1500);
 			udpPacketSize.addChangeListener(this);
 			udpForm.addCell(udpPacketSize);
-			udpPacketSizeUnit = new JComboBox(IperfUnit.getAllowedUDPPacketSizeUnits());
+			udpPacketSizeUnit = new JComboBox<Object>(IperfUnit.getAllowedUDPPacketSizeUnits());
 			udpPacketSizeUnit.addActionListener(this);
 			udpPacketSizeUnit.setSelectedItem(IperfUnit.KBYTES);
 			udpForm.addCell(udpPacketSizeUnit);
@@ -878,7 +883,7 @@ public class JPerfUI extends JFrame
 			lb_tos = new JLabel("Type of Service");
 			lb_tos.setToolTipText("The type-of-service for outgoing packets. (Many routers ignore the TOS field)   (command line: -S)");
 			ipForm.addCell(lb_tos);
-			tos = new JComboBox(TosOption.values());
+			tos = new JComboBox<Object>(TosOption.values());
 			tos.addActionListener(this);
 			tos.setSelectedItem(TosOption.NONE);
 			ipForm.addCell(tos);

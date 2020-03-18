@@ -37,9 +37,13 @@ import org.jfree.data.xy.XYSeriesCollection;
 public class IPerfChartPanel extends AbstractChartPanel
 	implements Runnable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5091609253008799137L;
+
 	private class SeriesData
 	{
-		public String		seriesId;
 		public String		bandwidthLegend, jitterLegend;
 		public JLabel		seriesLabel;
 		public XYSeries	bandwidthSeries;
@@ -49,7 +53,6 @@ public class IPerfChartPanel extends AbstractChartPanel
 
 		public SeriesData(String seriesId, String bandwidthLegend, String jitterLegend, Color seriesColor, String printfBandwidthValueExpression, String printfJitterValueExpression)
 		{
-			this.seriesId = seriesId;
 			this.bandwidthLegend = bandwidthLegend;
 			this.jitterLegend = jitterLegend;
 			this.bandwidthSeries = new XYSeries(bandwidthLegend);
@@ -75,7 +78,7 @@ public class IPerfChartPanel extends AbstractChartPanel
 	private Color												backgroundColor, foregroundColor, gridColor;
 	private String											bandwidthUnit, jitterUnit;
 	private boolean isServerMode = false;
-	private double timeWindow, reportInterval;
+	private double reportInterval;
 	
 	public IPerfChartPanel(String title, String bandwidthUnit, String jitterUnit, String timeAxisLabel, String bandwidthValueAxisLabel, String jitterValueAxisLabel, double delayInSeconds, double timeWindow, double reportInterval, Color backgroundColor, Color foregroundColor,
 			Color gridColor)
@@ -140,7 +143,6 @@ public class IPerfChartPanel extends AbstractChartPanel
 		this.isServerMode = isServerMode;
 		this.bandwidthUnit = bandwidthUnit;
 		this.jitterUnit = jitterUnit;
-		this.timeWindow = timeWindow;
 		this.reportInterval = reportInterval;
 		
 		// reset the content pane
