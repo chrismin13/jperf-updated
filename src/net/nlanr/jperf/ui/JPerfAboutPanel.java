@@ -188,6 +188,7 @@ public class JPerfAboutPanel extends JPanel
 				license.append("\n");
 				line = in.readLine();
 			}
+			in.close();
 		}
 		catch (FileNotFoundException f)
 		{
