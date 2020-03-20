@@ -10,25 +10,22 @@
 
 package net.nlanr.jperf.core;
 
-public enum IperfSpeedUnit
-{
+public enum IperfSpeedUnit {
 	KILOBITS_PERSEC("K", "Kbit/sec"), MEGABITS_PERSEC("M", "Mbit/sec");
-	
+
 	private String unit;
 	private String description;
-	IperfSpeedUnit(String unit, String description)
-	{
+
+	IperfSpeedUnit(String unit, String description) {
 		this.unit = unit;
 		this.description = description;
 	}
-	
-	public String getUnit()
-	{
+
+	public String getUnit() {
 		return unit;
 	}
-	
-	public String toString()
-	{
+
+	public String toString() {
 		return description;
 	}
 }

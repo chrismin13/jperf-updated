@@ -34,25 +34,22 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-public class IPerfChartPanel extends AbstractChartPanel
-	implements Runnable
-{
+public class IPerfChartPanel extends AbstractChartPanel implements Runnable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5091609253008799137L;
 
-	private class SeriesData
-	{
-		public String		bandwidthLegend, jitterLegend;
-		public JLabel		seriesLabel;
-		public XYSeries	bandwidthSeries;
-		public XYSeries	jitterSeries;
-		public Color		seriesColor;
-		public String		printfBandwidthValueExpression, printfJitterValueExpression;
+	private class SeriesData {
+		public String bandwidthLegend, jitterLegend;
+		public JLabel seriesLabel;
+		public XYSeries bandwidthSeries;
+		public XYSeries jitterSeries;
+		public Color seriesColor;
+		public String printfBandwidthValueExpression, printfJitterValueExpression;
 
-		public SeriesData(String seriesId, String bandwidthLegend, String jitterLegend, Color seriesColor, String printfBandwidthValueExpression, String printfJitterValueExpression)
-		{
+		public SeriesData(String seriesId, String bandwidthLegend, String jitterLegend, Color seriesColor,
+				String printfBandwidthValueExpression, String printfJitterValueExpression) {
 			this.bandwidthLegend = bandwidthLegend;
 			this.jitterLegend = jitterLegend;
 			this.bandwidthSeries = new XYSeries(bandwidthLegend);
@@ -65,86 +62,80 @@ public class IPerfChartPanel extends AbstractChartPanel
 		}
 	}
 
-	private int													proportion;
-	private CombinedDomainXYPlot				graphSet;
-	private XYItemRenderer							bandwidthRenderer, jitterRenderer;
-	private XYSeriesCollection					bandwidthCollection, jitterCollection;
-	private JPanel											panelTextStats	= new JPanel(new GridLayout(0, 4));
-	private JLabel											labelDate				= new JLabel(" ");
-	private double											delayInSeconds;
-	private SimpleDateFormat						sdf							= new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
-	private HashMap<String, SeriesData>	seriesData			= new HashMap<String, SeriesData>();
-	private Thread											timeThread			= null;
-	private Color												backgroundColor, foregroundColor, gridColor;
-	private String											bandwidthUnit, jitterUnit;
+	private int proportion;
+	private CombinedDomainXYPlot graphSet;
+	private XYItemRenderer bandwidthRenderer, jitterRenderer;
+	private XYSeriesCollection bandwidthCollection, jitterCollection;
+	private JPanel panelTextStats = new JPanel(new GridLayout(0, 4));
+	private JLabel labelDate = new JLabel(" ");
+	private double delayInSeconds;
+	private SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
+	private HashMap<String, SeriesData> seriesData = new HashMap<String, SeriesData>();
+	private Thread timeThread = null;
+	private Color backgroundColor, foregroundColor, gridColor;
+	private String bandwidthUnit, jitterUnit;
 	private boolean isServerMode = false;
 	private double reportInterval;
-	
-	public IPerfChartPanel(String title, String bandwidthUnit, String jitterUnit, String timeAxisLabel, String bandwidthValueAxisLabel, String jitterValueAxisLabel, double delayInSeconds, double timeWindow, double reportInterval, Color backgroundColor, Color foregroundColor,
-			Color gridColor)
-	{
+
+	public IPerfChartPanel(String title, String bandwidthUnit, String jitterUnit, String timeAxisLabel,
+			String bandwidthValueAxisLabel, String jitterValueAxisLabel, double delayInSeconds, double timeWindow,
+			double reportInterval, Color backgroundColor, Color foregroundColor, Color gridColor) {
 		this.delayInSeconds = delayInSeconds;
 		this.proportion = 1;
 		this.backgroundColor = backgroundColor;
 		this.foregroundColor = foregroundColor;
 		this.gridColor = gridColor;
 
-		reconfigure(false, title, bandwidthUnit, jitterUnit, timeAxisLabel, bandwidthValueAxisLabel, jitterValueAxisLabel, timeWindow, reportInterval);
+		reconfigure(false, title, bandwidthUnit, jitterUnit, timeAxisLabel, bandwidthValueAxisLabel,
+				jitterValueAxisLabel, timeWindow, reportInterval);
 	}
 
-	public void start()
-	{
-		if (timeThread == null)
-		{
+	public void start() {
+		if (timeThread == null) {
 			this.timeThread = new Thread(this);
 			timeThread.start();
 		}
 	}
 
-	private boolean seriesExists(String seriesId)
-	{
-		if (seriesData.keySet().contains(seriesId))
-		{
+	private boolean seriesExists(String seriesId) {
+		if (seriesData.keySet().contains(seriesId)) {
 			return true;
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
 
-	public void maybeAddNewSeries(String seriesId, String seriesLegend, String jitterLegend, Color seriesColor)
-	{
+	public void maybeAddNewSeries(String seriesId, String seriesLegend, String jitterLegend, Color seriesColor) {
 		maybeAddNewSeries(seriesId, seriesLegend, jitterLegend, seriesColor, "%4.2f", "%4.2f");
 	}
 
-	public synchronized void maybeAddNewSeries(String seriesId, String seriesLegend, String jitterLegend, Color seriesColor, String printfBandwidthValueExpression, String printfJitterValueExpression)
-	{
-		if (!seriesExists(seriesId))
-		{
-			SeriesData data = new SeriesData(seriesId, seriesLegend, jitterLegend, seriesColor, printfBandwidthValueExpression, printfJitterValueExpression);
+	public synchronized void maybeAddNewSeries(String seriesId, String seriesLegend, String jitterLegend,
+			Color seriesColor, String printfBandwidthValueExpression, String printfJitterValueExpression) {
+		if (!seriesExists(seriesId)) {
+			SeriesData data = new SeriesData(seriesId, seriesLegend, jitterLegend, seriesColor,
+					printfBandwidthValueExpression, printfJitterValueExpression);
 			seriesData.put(seriesId, data);
-			
+
 			bandwidthCollection.addSeries(data.bandwidthSeries);
-			bandwidthRenderer.setSeriesPaint(bandwidthCollection.getSeriesCount()-1, data.seriesColor);
-			
-			if (isServerMode)
-			{
+			bandwidthRenderer.setSeriesPaint(bandwidthCollection.getSeriesCount() - 1, data.seriesColor);
+
+			if (isServerMode) {
 				jitterCollection.addSeries(data.jitterSeries);
-				jitterRenderer.setSeriesPaint(jitterCollection.getSeriesCount()-1, data.seriesColor);
+				jitterRenderer.setSeriesPaint(jitterCollection.getSeriesCount() - 1, data.seriesColor);
 			}
-			
+
 			panelTextStats.add(data.seriesLabel);
 		}
 	}
 
-	public void reconfigure(boolean isServerMode, String title, String bandwidthUnit, String jitterUnit, String timeAxisLabel, String bandwidthValueAxisLabel, String jitterValueAxisLabel, double timeWindow, double reportInterval)
-	{
+	public void reconfigure(boolean isServerMode, String title, String bandwidthUnit, String jitterUnit,
+			String timeAxisLabel, String bandwidthValueAxisLabel, String jitterValueAxisLabel, double timeWindow,
+			double reportInterval) {
 		this.isServerMode = isServerMode;
 		this.bandwidthUnit = bandwidthUnit;
 		this.jitterUnit = jitterUnit;
 		this.reportInterval = reportInterval;
-		
+
 		// reset the content pane
 		this.removeAll();
 		panelTextStats.removeAll();
@@ -159,8 +150,7 @@ public class IPerfChartPanel extends AbstractChartPanel
 		// creation of the jFreeChart
 		jFreeChart = new JFreeChart(null, JFreeChart.DEFAULT_TITLE_FONT, graphSet, false);
 		jFreeChart.setBackgroundPaint(backgroundColor);
-		if (title != null)
-		{
+		if (title != null) {
 			jFreeChart.setTitle(title);
 			jFreeChart.getTitle().setPaint(foregroundColor);
 		}
@@ -189,25 +179,21 @@ public class IPerfChartPanel extends AbstractChartPanel
 
 		// set up the domain axis
 		ValueAxis axis = bandwidthPlot.getDomainAxis();
-		if (timeAxisLabel != null)
-		{
+		if (timeAxisLabel != null) {
 			axis.setTickLabelPaint(foregroundColor);
 			axis.setLabel(timeAxisLabel);
 			axis.setLabelPaint(foregroundColor);
-		}
-		else
-		{
+		} else {
 			axis.setVisible(false);
 		}
 		axis.setAutoRange(true);
-		axis.setFixedAutoRange((int)Math.min(timeWindow, 30));
+		axis.setFixedAutoRange((int) Math.min(timeWindow, 30));
 
 		// set up the range axis
 		axis = bandwidthPlot.getRangeAxis();
 		axis.setTickLabelPaint(foregroundColor);
 
-		if (isServerMode)
-		{
+		if (isServerMode) {
 			rangeAxis = new NumberAxis(jitterValueAxisLabel);
 			rangeAxis.setLabelPaint(foregroundColor);
 
@@ -243,91 +229,79 @@ public class IPerfChartPanel extends AbstractChartPanel
 		this.setBackground(backgroundColor);
 	}
 
-	public void addSeriesBandwidthMeasurement(String seriesId, Measurement measurement)
-	{
+	public void addSeriesBandwidthMeasurement(String seriesId, Measurement measurement) {
 		SeriesData data = seriesData.get(seriesId);
-		
-		if (measurement.getEndTime()-measurement.getStartTime() > reportInterval)
-		{
+
+		if (measurement.getEndTime() - measurement.getStartTime() > reportInterval) {
 			// this is the sum-up of the test
-			data.seriesLabel.setText(String.format("<html><b>%s</b> [" + data.printfBandwidthValueExpression + "%s] </html>", data.bandwidthLegend, measurement.getValue(), bandwidthUnit+"/s"));
+			data.seriesLabel
+					.setText(String.format("<html><b>%s</b> [" + data.printfBandwidthValueExpression + "%s] </html>",
+							data.bandwidthLegend, measurement.getValue(), bandwidthUnit + "/s"));
 			return;
 		}
-		
-		if (isServerMode)
-		{
-			try
-			{
-				if (data.bandwidthSeries.getDataItem((int)measurement.getEndTime()) != null)
-				{
+
+		if (isServerMode) {
+			try {
+				if (data.bandwidthSeries.getDataItem((int) measurement.getEndTime()) != null) {
 					// clear the series
 					data.bandwidthSeries.clear();
 				}
-			}
-			catch(Exception e)
-			{
+			} catch (Exception e) {
 				// nothing
 			}
 		}
 		data.bandwidthSeries.add(measurement.getEndTime(), measurement.getValue());
-		data.seriesLabel.setText(String.format("<html><b>%s</b> " + data.printfBandwidthValueExpression + "%s </html>", data.bandwidthLegend, measurement.getValue(), bandwidthUnit+"/s"));
+		data.seriesLabel.setText(String.format("<html><b>%s</b> " + data.printfBandwidthValueExpression + "%s </html>",
+				data.bandwidthLegend, measurement.getValue(), bandwidthUnit + "/s"));
 	}
-	
-	public void addSeriesBandwidthAndJitterMeasurement(String seriesId, Measurement bandwidth, Measurement jitter)
-	{
+
+	public void addSeriesBandwidthAndJitterMeasurement(String seriesId, Measurement bandwidth, Measurement jitter) {
 		SeriesData data = seriesData.get(seriesId);
-		
-		if (bandwidth.getEndTime()-bandwidth.getStartTime() > reportInterval)
-		{
+
+		if (bandwidth.getEndTime() - bandwidth.getStartTime() > reportInterval) {
 			// this is the sum-up of the test
-			data.seriesLabel.setText(String.format("<html><b>%s</b> [" + data.printfBandwidthValueExpression + "%s]<br><b>%s</b> ["+data.printfJitterValueExpression+"%s]</html>", data.bandwidthLegend, bandwidth.getValue(), bandwidthUnit+"/s", data.jitterLegend, jitter.getValue(), jitterUnit));
+			data.seriesLabel.setText(String.format(
+					"<html><b>%s</b> [" + data.printfBandwidthValueExpression + "%s]<br><b>%s</b> ["
+							+ data.printfJitterValueExpression + "%s]</html>",
+					data.bandwidthLegend, bandwidth.getValue(), bandwidthUnit + "/s", data.jitterLegend,
+					jitter.getValue(), jitterUnit));
 			return;
 		}
-		
-		if (isServerMode)
-		{
-			try
-			{
-				if (data.bandwidthSeries.getDataItem((int)bandwidth.getEndTime()) != null)
-				{
+
+		if (isServerMode) {
+			try {
+				if (data.bandwidthSeries.getDataItem((int) bandwidth.getEndTime()) != null) {
 					// clear the series
 					data.bandwidthSeries.clear();
 				}
-			}
-			catch(Exception e)
-			{
+			} catch (Exception e) {
 				// nothing
 			}
-			try
-			{
-				if (data.jitterSeries.getDataItem((int)jitter.getEndTime()) != null)
-				{
+			try {
+				if (data.jitterSeries.getDataItem((int) jitter.getEndTime()) != null) {
 					// clear the series
 					data.jitterSeries.clear();
 				}
-			}
-			catch(Exception e)
-			{
+			} catch (Exception e) {
 				// nothing
 			}
 		}
 		data.bandwidthSeries.add(bandwidth.getEndTime(), bandwidth.getValue());
 		data.jitterSeries.add(jitter.getEndTime(), jitter.getValue());
-		data.seriesLabel.setText(String.format("<html><b>%s</b> " + data.printfBandwidthValueExpression + "%s<br><b>%s</b> "+data.printfJitterValueExpression+"%s</html>", data.bandwidthLegend, bandwidth.getValue(), bandwidthUnit+"/s", data.jitterLegend, jitter.getValue(), jitterUnit));
+		data.seriesLabel.setText(String.format(
+				"<html><b>%s</b> " + data.printfBandwidthValueExpression + "%s<br><b>%s</b> "
+						+ data.printfJitterValueExpression + "%s</html>",
+				data.bandwidthLegend, bandwidth.getValue(), bandwidthUnit + "/s", data.jitterLegend, jitter.getValue(),
+				jitterUnit));
 	}
 
-	public void run()
-	{
-		while (true)
-		{
-			try
-			{
+	public void run() {
+		while (true) {
+			try {
 				Date d = new Date();
 				labelDate.setText(sdf.format(d));
 				Thread.sleep((int) (delayInSeconds * 1000));
-			}
-			catch (Exception ex)
-			{
+			} catch (Exception ex) {
 			}
 		}
 	}

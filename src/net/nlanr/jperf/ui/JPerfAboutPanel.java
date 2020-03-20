@@ -35,32 +35,30 @@ import javax.swing.JTextArea;
 
 import net.nlanr.jperf.JPerf;
 
-public class JPerfAboutPanel extends JPanel 
-{
+public class JPerfAboutPanel extends JPanel {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4387421127535857404L;
 	private String version;
-	
-	public JPerfAboutPanel(String version)
-	{
+
+	public JPerfAboutPanel(String version) {
 		this.version = version;
 		init();
 	}
-	
-	private void init()
-	{
+
+	private void init() {
 		this.setLayout(new BorderLayout());
-		
+
 		JPanel top = new JPanel();
 		top.setLayout(new FlowLayout(FlowLayout.LEFT));
 		JTabbedPane bottom = new JTabbedPane();
-		
+
 		this.add(top, BorderLayout.NORTH);
 		this.add(bottom, BorderLayout.CENTER);
-				
-		// print out name, print out version, print out copyright (short statement), and web link
+
+		// print out name, print out version, print out copyright (short statement), and
+		// web link
 
 		// Iperf graphic
 		ImageIcon icon = new ImageIcon(JPerfAboutPanel.class.getResource("Iperf-words.jpg"));
@@ -71,7 +69,7 @@ public class JPerfAboutPanel extends JPanel
 		info.setLayout(new BoxLayout(info, BoxLayout.Y_AXIS));
 
 		// Make this bold!
-		JLabel name = new JLabel("<html><b>JPERF "+JPerf.JPERF_VERSION+"</b></html>");
+		JLabel name = new JLabel("<html><b>JPERF " + JPerf.JPERF_VERSION + "</b></html>");
 		name.setHorizontalAlignment(JLabel.CENTER);
 		name.setAlignmentX(Component.CENTER_ALIGNMENT);
 		info.add(name);
@@ -85,7 +83,7 @@ public class JPerfAboutPanel extends JPanel
 		author.setAlignmentX(Component.CENTER_ALIGNMENT);
 		info.add(author);
 
-		JLabel webpage = new JLabel("<html><font color='blue'><b><u>"+JPerf.IPERF_URL+"</u></b></font></html>");
+		JLabel webpage = new JLabel("<html><font color='blue'><b><u>" + JPerf.IPERF_URL + "</u></b></font></html>");
 		webpage.setHorizontalAlignment(JLabel.CENTER);
 		webpage.setAlignmentX(Component.CENTER_ALIGNMENT);
 		info.add(webpage);
@@ -95,27 +93,27 @@ public class JPerfAboutPanel extends JPanel
 		// add developers information
 		JPanel devPanel = new JPanel();
 		devPanel.setLayout(new BoxLayout(devPanel, BoxLayout.Y_AXIS));
-		
+
 		JLabel dev;
-		
+
 		dev = new JLabel("  ");
 		dev.setAlignmentX(Component.CENTER_ALIGNMENT);
 		devPanel.add(dev);
-		
+
 		dev = new JLabel("JPerf 2.x.x developers:");
 		dev.setAlignmentX(Component.CENTER_ALIGNMENT);
 		devPanel.add(dev);
 		dev = new JLabel("Nicolas Richasse");
 		dev.setAlignmentX(Component.CENTER_ALIGNMENT);
 		devPanel.add(dev);
-		
+
 		dev = new JLabel("  ");
 		dev.setAlignmentX(Component.CENTER_ALIGNMENT);
 		devPanel.add(dev);
 		dev = new JLabel("  ");
 		dev.setAlignmentX(Component.CENTER_ALIGNMENT);
 		devPanel.add(dev);
-		
+
 		dev = new JLabel("JPerf 1.x.x developers:");
 		dev.setAlignmentX(Component.CENTER_ALIGNMENT);
 		devPanel.add(dev);
@@ -161,15 +159,15 @@ public class JPerfAboutPanel extends JPanel
 		dev = new JLabel("API from http://www.jfree.org/jfreechart/");
 		dev.setAlignmentX(Component.CENTER_ALIGNMENT);
 		devPanel.add(dev);
-		
+
 		bottom.addTab("Developers", null, new JScrollPane(devPanel));
 
 		JPanel ackPanel = new JPanel(new BorderLayout());
 		JTextArea ack = new JTextArea(
-				"Thanks to Mark Gates (NLANR), Alex Warshavsky (NLANR) and Justin Pietsch (University of Washington) who were responsible for the 1.1.x releases of Iperf.\n" +
-				"For this release, we would like to thank Bill Cerveny (Internet2), Micheal Lambert (PSC), Dale Finkelson (UNL) and Matthew Zekauskas (Internet2) for help in getting access to IPv6 networks / machines.\n" +
-				"Special thanks to Matthew Zekauskas (Internet2) for helping out in the FreeBSD implementation.\n" +
-				"Also, thanks to Kraemer Oliver (Sony) for providing an independent implementation of IPv6 version of Iperf, which provided a useful comparison for testing our features.");
+				"Thanks to Mark Gates (NLANR), Alex Warshavsky (NLANR) and Justin Pietsch (University of Washington) who were responsible for the 1.1.x releases of Iperf.\n"
+						+ "For this release, we would like to thank Bill Cerveny (Internet2), Micheal Lambert (PSC), Dale Finkelson (UNL) and Matthew Zekauskas (Internet2) for help in getting access to IPv6 networks / machines.\n"
+						+ "Special thanks to Matthew Zekauskas (Internet2) for helping out in the FreeBSD implementation.\n"
+						+ "Also, thanks to Kraemer Oliver (Sony) for providing an independent implementation of IPv6 version of Iperf, which provided a useful comparison for testing our features.");
 		ack.setBackground(new Color(220, 239, 206));
 		ack.setEditable(false);
 		ack.setLineWrap(true);
@@ -181,25 +179,19 @@ public class JPerfAboutPanel extends JPanel
 		JScrollPane licensePanel = new JScrollPane(license);
 		bottom.addTab("License", null, licensePanel);
 		license.setEditable(false);
-		try
-		{
+		try {
 			InputStream inIS = this.getClass().getResourceAsStream("/license.txt");
 			BufferedReader in = new BufferedReader(new InputStreamReader(inIS));
 			String line = in.readLine();
-			while (line != null)
-			{
+			while (line != null) {
 				license.append(line);
 				license.append("\n");
 				line = in.readLine();
 			}
 			in.close();
-		}
-		catch (FileNotFoundException f)
-		{
+		} catch (FileNotFoundException f) {
 			license.append("Error: " + f.getMessage());
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			license.append("Error: " + e.getMessage());
 		}
 	}

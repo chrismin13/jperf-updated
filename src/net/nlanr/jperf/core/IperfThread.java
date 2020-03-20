@@ -24,20 +24,18 @@ import java.util.regex.*;
 
 import javax.swing.SwingUtilities;
 
-public class IperfThread extends Thread
-{
-	private String										command;
-	private Process										process;
-	private JPerfUI										frame;
-	private Vector<JperfStreamResult>	finalResults;
+public class IperfThread extends Thread {
+	private String command;
+	private Process process;
+	private JPerfUI frame;
+	private Vector<JperfStreamResult> finalResults;
 
-	private BufferedReader						input;
-	private BufferedReader						errors;
+	private BufferedReader input;
+	private BufferedReader errors;
 
-	private boolean										isServerMode;
+	private boolean isServerMode;
 
-	public IperfThread(boolean isServerMode, String command, JPerfUI mainframe)
-	{
+	public IperfThread(boolean isServerMode, String command, JPerfUI mainframe) {
 		this.isServerMode = isServerMode;
 		this.command = command;
 		this.frame = mainframe;
@@ -45,146 +43,104 @@ public class IperfThread extends Thread
 		this.frame.logMessage(command);
 	}
 
-	public void run()
-	{
-		try
-		{
+	public void run() {
+		try {
 			frame.setStartedStatus();
 
 			process = Runtime.getRuntime().exec(command);
-			
+
 			// read in the output from Iperf
 			input = new BufferedReader(new InputStreamReader(process.getInputStream()));
 			errors = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
 			String input_line = null;
-			while ((input_line = input.readLine()) != null)
-			{
+			while ((input_line = input.readLine()) != null) {
 				parseLine(input_line);
 				frame.logMessage(input_line);
 			}
 
 			String error_line = null;
-			while ((error_line = errors.readLine()) != null)
-			{
+			while ((error_line = errors.readLine()) != null) {
 				frame.logMessage(error_line);
 			}
 
 			frame.logMessage("Done.\n");
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			// don't do anything?
 			frame.logMessage("\nIperf thread stopped [CAUSE=" + e.getMessage() + "]");
-		}
-		finally
-		{
+		} finally {
 			quit();
 		}
 	}
-	
+
 	private Object waitWindowMutex = new Object();
 	private JPerfWaitWindow waitWindow;
-	
-	public synchronized void quit()
-	{
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			public void run()
-			{
-				if (process != null)
-				{
-					synchronized(waitWindowMutex)
-					{
-						if (waitWindow != null)
-						{
+
+	public synchronized void quit() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if (process != null) {
+					synchronized (waitWindowMutex) {
+						if (waitWindow != null) {
 							return;
 						}
 						waitWindow = new JPerfWaitWindow(frame);
 						frame.setEnabled(false);
 						waitWindow.setVisible(true);
 					}
-					Thread t = new Thread()
-					{
-						public void run()
-						{
+					Thread t = new Thread() {
+						public void run() {
 							process.destroy();
-							
-							if (!isServerMode)
-							{
-								try
-								{
+
+							if (!isServerMode) {
+								try {
 									process.getInputStream().close();
-								}
-								catch (Exception e)
-								{
+								} catch (Exception e) {
 									// nothing
 								}
-				
-								try
-								{
+
+								try {
 									process.getOutputStream().close();
-								}
-								catch (Exception e)
-								{
+								} catch (Exception e) {
 									// nothing
 								}
-				
-								try
-								{
+
+								try {
 									process.getErrorStream().close();
-								}
-								catch (Exception e)
-								{
+								} catch (Exception e) {
 									// nothing
 								}
-								
-								if (input != null)
-								{
-									try
-									{
+
+								if (input != null) {
+									try {
 										input.close();
-									}
-									catch (Exception e)
-									{
+									} catch (Exception e) {
 										// nothing
-									}
-									finally
-									{
+									} finally {
 										input = null;
 									}
 								}
-				
-								if (errors != null)
-								{
-									try
-									{
+
+								if (errors != null) {
+									try {
 										errors.close();
-									}
-									catch (Exception e)
-									{
+									} catch (Exception e) {
 										// nothing
-									}
-									finally
-									{
+									} finally {
 										errors = null;
 									}
 								}
 							}
-							
-							try
-							{
+
+							try {
 								process.waitFor();
-							}
-							catch (Exception ie)
-							{
+							} catch (Exception ie) {
 								// nothing
 							}
-				
+
 							process = null;
-							
-							synchronized(waitWindowMutex)
-							{
+
+							synchronized (waitWindowMutex) {
 								waitWindow.setVisible(false);
 								waitWindow.dispose();
 								waitWindow = null;
@@ -200,11 +156,9 @@ public class IperfThread extends Thread
 		});
 	}
 
-	public void parseLine(String line)
-	{
+	public void parseLine(String line) {
 		// only want the actual output lines
-		if (line.matches("\\[[ \\d]+\\]\\s*[\\d]+.*"))
-		{
+		if (line.matches("\\[[ \\d]+\\]\\s*[\\d]+.*")) {
 			Pattern p = Pattern.compile("[-\\[\\]\\s]+");
 			// ok now break up the line into id#, interval, amount transfered, format
 			// transferred, bandwidth, and format of bandwidth
@@ -215,37 +169,31 @@ public class IperfThread extends Thread
 
 			boolean found = false;
 			JperfStreamResult streamResult = new JperfStreamResult(id);
-			for (int i = 0; i < finalResults.size(); ++i)
-			{
-				if ((finalResults.elementAt(i)).getID() == id)
-				{
+			for (int i = 0; i < finalResults.size(); ++i) {
+				if ((finalResults.elementAt(i)).getID() == id) {
 					streamResult = finalResults.elementAt(i);
 					found = true;
 					break;
 				}
 			}
 
-			if (!found)
-			{
+			if (!found) {
 				finalResults.add(streamResult);
 			}
 			// this is TCP or Client UDP
-			if (results.length == 9)
-			{
+			if (results.length == 9) {
 				Double start = Double.parseDouble(results[2].trim());
 				Double end = Double.parseDouble(results[3].trim());
 				Double bw = Double.parseDouble(results[7].trim());
-				
+
 				Measurement M = new Measurement(start, end, bw, results[8]);
 				streamResult.addBW(M);
 				frame.addNewStreamBandwidthMeasurement(id, M);
-			}
-			else if (results.length == 14)
-			{
+			} else if (results.length == 14) {
 				double start = Double.parseDouble(results[2].trim());
 				double end = Double.parseDouble(results[3].trim());
 				double bw = Double.parseDouble(results[7].trim());
-				
+
 				Measurement B = new Measurement(start, end, bw, results[7]);
 				streamResult.addBW(B);
 

@@ -65,107 +65,106 @@ import java.io.*;
 
 import static net.nlanr.jperf.core.IPerfProperties.*;
 
-public class JPerfUI extends JFrame
-	implements ActionListener, KeyListener, ChangeListener, WindowListener
-{
+public class JPerfUI extends JFrame implements ActionListener, KeyListener, ChangeListener, WindowListener {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6166145321018710000L;
 
-	private JPerfAboutPanel	aboutPanel;
+	private JPerfAboutPanel aboutPanel;
 
 	// Menu stuff
-	private JMenuBar				menuBar;
-	private JMenu						menuJPerf;
-	private JMenuItem				menuJPerfOpen, menuJPerfSaveAs, menuJPerfRestoreDefaults, menuJPerfAbout, menuJPerfQuit;
+	private JMenuBar menuBar;
+	private JMenu menuJPerf;
+	private JMenuItem menuJPerfOpen, menuJPerfSaveAs, menuJPerfRestoreDefaults, menuJPerfAbout, menuJPerfQuit;
 
 	// Panels
-	private JSplitPane			centerPanel;
-	private JTabbedPane			tabbedPane;
-	private JScrollPane			outputScrollPane;
-	private JTextArea				output;
+	private JSplitPane centerPanel;
+	private JTabbedPane tabbedPane;
+	private JScrollPane outputScrollPane;
+	private JTextArea output;
 
 	// quickstart parameters
-	private JTextField			iperfCommandLabel;
-	private JRadioButton		serverModeRadioButton, clientModeRadioButton;
-	private JCheckBox				lb_clientLimit;
-	private JLabel					lb_serverAddress, lb_serverPort, lb_listenPort, lb_simultaneousConnectionsNumber, lb_connectionsLimitNumber;
-	private JTextField			serverAddress;
-	private JTextField			clientLimit;
-	private IntegerSpinner	serverPort, listenPort;
-	private IntegerSpinner	simultaneousConnectionsNumber, connectionsLimitNumber;
-	private JButton						startIperf, stopIperf, restoreDefaults, saveConfiguration, loadConfiguration;
+	private JTextField iperfCommandLabel;
+	private JRadioButton serverModeRadioButton, clientModeRadioButton;
+	private JCheckBox lb_clientLimit;
+	private JLabel lb_serverAddress, lb_serverPort, lb_listenPort, lb_simultaneousConnectionsNumber,
+			lb_connectionsLimitNumber;
+	private JTextField serverAddress;
+	private JTextField clientLimit;
+	private IntegerSpinner serverPort, listenPort;
+	private IntegerSpinner simultaneousConnectionsNumber, connectionsLimitNumber;
+	private JButton startIperf, stopIperf, restoreDefaults, saveConfiguration, loadConfiguration;
 
 	// transport parameters
-	private JRadioButton			tcpRadioButton, udpRadioButton;
-	private JCheckBox					lb_tcpBufferLength;
-	private DoubleSpinner	tcpBufferLength;
-	private JComboBox<?>					tcpBufferSizeUnit;
-	private JCheckBox					lb_tcpWindowSize;
-	private DoubleSpinner	tcpWindowSize;
-	private JComboBox<?>					tcpWindowSizeUnit;
-	private JCheckBox					lb_mss;
-	private DoubleSpinner	mss;
-	private JComboBox<?>					mssUnit;
-	private JCheckBox					lb_udpBufferSize;
-	private DoubleSpinner	udpBufferSize;
-	private JComboBox<?>					udpBufferSizeUnit;
-	private JCheckBox					lb_udpPacketSize;
-	private DoubleSpinner	udpPacketSize;
-	private JComboBox<?>					udpPacketSizeUnit;
-	private JLabel						lb_udpBandwidth;
-	private DoubleSpinner	udpBandwidth;
-	private JComboBox<?>					udpBandwidthUnit;
-	private JCheckBox					tcpNoDelay;
+	private JRadioButton tcpRadioButton, udpRadioButton;
+	private JCheckBox lb_tcpBufferLength;
+	private DoubleSpinner tcpBufferLength;
+	private JComboBox<?> tcpBufferSizeUnit;
+	private JCheckBox lb_tcpWindowSize;
+	private DoubleSpinner tcpWindowSize;
+	private JComboBox<?> tcpWindowSizeUnit;
+	private JCheckBox lb_mss;
+	private DoubleSpinner mss;
+	private JComboBox<?> mssUnit;
+	private JCheckBox lb_udpBufferSize;
+	private DoubleSpinner udpBufferSize;
+	private JComboBox<?> udpBufferSizeUnit;
+	private JCheckBox lb_udpPacketSize;
+	private DoubleSpinner udpPacketSize;
+	private JComboBox<?> udpPacketSizeUnit;
+	private JLabel lb_udpBandwidth;
+	private DoubleSpinner udpBandwidth;
+	private JComboBox<?> udpBandwidthUnit;
+	private JCheckBox tcpNoDelay;
 
 	// ip parameters
-	private JLabel						lb_bindHost, lb_TTL;
-	private JTextField				bindhost;
-	private IntegerSpinner	TTL;
-	private JComboBox<?>					tos;
+	private JLabel lb_bindHost, lb_TTL;
+	private JTextField bindhost;
+	private IntegerSpinner TTL;
+	private JComboBox<?> tos;
 
 	// other parameters
-	private JCheckBox					printMSS;
-	private JTextField				representativeFile;
-	private IntegerSpinner	transmit;
-	private JComboBox<?>					formatList;
-	private IntegerSpinner	interval;
-	private ButtonGroup				iperfModeButtonGroup;
-	private ButtonGroup				protocolButtonGroup;
-	private JRadioButton			transmitBytesRadioButton, transmitSecondsRadioButton;
-	private JCheckBox					ipv6;
-	private IperfThread				iperf;
-	private JCheckBox					alwaysClearOutput;
-	private JButton						clearOutputButton, saveOutputButton;
-	private JCheckBox					compatibilityMode;
-	private IntegerSpinner	testPort;
-	private JCheckBox					dualMode, tradeMode;
-	private JButton						browse;
-	private float							iperfVersion;
+	private JCheckBox printMSS;
+	private JTextField representativeFile;
+	private IntegerSpinner transmit;
+	private JComboBox<?> formatList;
+	private IntegerSpinner interval;
+	private ButtonGroup iperfModeButtonGroup;
+	private ButtonGroup protocolButtonGroup;
+	private JRadioButton transmitBytesRadioButton, transmitSecondsRadioButton;
+	private JCheckBox ipv6;
+	private IperfThread iperf;
+	private JCheckBox alwaysClearOutput;
+	private JButton clearOutputButton, saveOutputButton;
+	private JCheckBox compatibilityMode;
+	private IntegerSpinner testPort;
+	private JCheckBox dualMode, tradeMode;
+	private JButton browse;
+	private float iperfVersion;
 
-	private JToolBar					toolbar;
+	private JToolBar toolbar;
 
 	// labels only for disabling stuff
-	private JLabel						lb_transmit, lb_tos, lb_representativeFile, lb_testingMode, lb_testPort, lb_outputFormat, lb_reportInterval;
+	private JLabel lb_transmit, lb_tos, lb_representativeFile, lb_testingMode, lb_testPort, lb_outputFormat,
+			lb_reportInterval;
 
 	// to run iperf
-	private String						options;
-	private String						version;
+	private String options;
+	private String version;
 
-	private String						iperfCommand;
-	
+	private String iperfCommand;
+
 	private IPerfProperties defaultConfiguration = new IPerfProperties(true);
-	
+
 	private JFileChooser saveFileChooser, loadFileChooser;
-	
-	public JPerfUI(String iperfCommand, String version)
-	{
-		super("JPerf "+JPerf.JPERF_VERSION+" - Network performance measurement graphical tool");
+
+	public JPerfUI(String iperfCommand, String version) {
+		super("JPerf " + JPerf.JPERF_VERSION + " - Network performance measurement graphical tool");
 		/*
-		 * When the jperf gui is first started up, the version is obtained. It is
-		 * passed when creating an JperfGUI we use the version number to disable or
-		 * enable some features
+		 * When the jperf gui is first started up, the version is obtained. It is passed
+		 * when creating an JperfGUI we use the version number to disable or enable some
+		 * features
 		 */
 		this.iperfCommand = iperfCommand;
 		this.version = version;
@@ -196,25 +195,21 @@ public class JPerfUI extends JFrame
 		serverAddress.grabFocus();
 	}
 
-	private JPanel	quickStartPanel		= null;
-	private JPanel	applicationPanel	= null;
-	private JPanel	transportPanel		= null;
-	private JPanel	tcpPanel					= null;
-	private JPanel	udpPanel					= null;
-	private JPanel	ipPanel						= null;
-	
-	private void applyConfiguration(IPerfProperties p)
-	{
+	private JPanel quickStartPanel = null;
+	private JPanel applicationPanel = null;
+	private JPanel transportPanel = null;
+	private JPanel tcpPanel = null;
+	private JPanel udpPanel = null;
+	private JPanel ipPanel = null;
+
+	private void applyConfiguration(IPerfProperties p) {
 		// quickstart panel
 		boolean isServerModeSelected = p.getString(KEY_MODE, DEFAULT_MODE).toLowerCase().trim().equals("server");
 		setServerModeSelected(isServerModeSelected);
 		setClientModeSelected(!isServerModeSelected);
-		if (isServerModeSelected)
-		{
+		if (isServerModeSelected) {
 			serverModeRadioButton.doClick();
-		}
-		else
-		{
+		} else {
 			clientModeRadioButton.doClick();
 		}
 		serverAddress.setText(p.getString(KEY_SERVER_ADDRESS, DEFAULT_SERVER_ADDRESS));
@@ -225,20 +220,18 @@ public class JPerfUI extends JFrame
 		listenPort.setValue(p.getInteger(KEY_LISTEN_PORT, DEFAULT_LISTEN_PORT));
 		simultaneousConnectionsNumber.setValue(p.getInteger(KEY_PARALLEL_STREAMS, DEFAULT_PARALLEL_STREAMS));
 		connectionsLimitNumber.setValue(p.getInteger(KEY_NUM_CONNECTIONS, DEFAULT_NUM_CONNECTIONS));
-		
+
 		// application layer panel
 		compatibilityMode.setSelected(p.getBoolean(KEY_COMPATIBILITY_MODE_ENABLED, DEFAULT_COMPATIBILITY_MODE_ENABLED));
 		_compatibilityMode_actionPerformed();
 		transmit.setValue(p.getInteger(KEY_TRANSMIT, DEFAULT_TRANSMIT));
-		boolean isTransmitSecondsSelected = p.getString(KEY_TRANSMIT_UNIT, DEFAULT_TRANSMIT_UNIT).trim().toLowerCase().equals("seconds");
+		boolean isTransmitSecondsSelected = p.getString(KEY_TRANSMIT_UNIT, DEFAULT_TRANSMIT_UNIT).trim().toLowerCase()
+				.equals("seconds");
 		transmitSecondsRadioButton.setSelected(isTransmitSecondsSelected);
 		transmitBytesRadioButton.setSelected(!isTransmitSecondsSelected);
-		if (isTransmitSecondsSelected)
-		{
+		if (isTransmitSecondsSelected) {
 			_transmitSecondsRadioButton_actionPerformed();
-		}
-		else
-		{
+		} else {
 			_transmitBytesRadioButton_actionPerformed();
 		}
 		formatList.setSelectedItem(p.getUnit(KEY_OUTPUT_FORMAT, DEFAULT_OUTPUT_FORMAT));
@@ -250,65 +243,60 @@ public class JPerfUI extends JFrame
 		testPort.setValue(p.getInteger(KEY_TEST_MODE_PORT, DEFAULT_TEST_MODE_PORT));
 		printMSS.setSelected(p.getBoolean(KEY_PRINT_MSS_ENABLED, DEFAULT_PRINT_MSS_ENABLED));
 		_printMSS_actionPerformed();
-		
+
 		// transport layer panel
 		boolean isUDPModeSelected = p.getString(KEY_TRANSPORT_PROTOCOL, DEFAULT_TRANSPORT_PROTOCOL).equals("udp");
 		setUDPOptionsEnabled(isUDPModeSelected);
 		setTCPOptionsEnabled(!isUDPModeSelected);
-		if (isUDPModeSelected)
-		{
+		if (isUDPModeSelected) {
 			udpRadioButton.doClick();
-		}
-		else
-		{
+		} else {
 			tcpRadioButton.doClick();
 		}
-		
+
 		lb_tcpBufferLength.setSelected(p.getBoolean(KEY_TCP_BUFFER_LENGTH_ENABLED, DEFAULT_TCP_BUFFER_LENGTH_ENABLED));
 		tcpBufferLength.setValue(p.getDouble(KEY_TCP_BUFFER_LENGTH, DEFAULT_TCP_BUFFER_LENGTH));
 		tcpBufferSizeUnit.setSelectedItem(p.getUnit(KEY_TCP_BUFFER_LENGTH_UNIT, DEFAULT_TCP_BUFFER_LENGTH_UNIT));
 		_lb_tcpBufferLength_actionPerformed();
-		
+
 		lb_tcpWindowSize.setSelected(p.getBoolean(KEY_TCP_WINDOW_SIZE_ENABLED, DEFAULT_TCP_WINDOW_SIZE_ENABLED));
 		tcpWindowSize.setValue(p.getDouble(KEY_TCP_WINDOW_SIZE, DEFAULT_TCP_WINDOW_SIZE));
 		tcpWindowSizeUnit.setSelectedItem(p.getUnit(KEY_TCP_WINDOW_SIZE_UNIT, DEFAULT_TCP_WINDOW_SIZE_UNIT));
 		_lb_tcpWindowSize_actionPerformed();
-		
+
 		lb_mss.setSelected(p.getBoolean(KEY_TCP_MSS_ENABLED, DEFAULT_TCP_MSS_ENABLED));
 		mss.setValue(p.getDouble(KEY_TCP_MSS, DEFAULT_TCP_MSS));
 		mssUnit.setSelectedItem(p.getUnit(KEY_TCP_MSS_UNIT, DEFAULT_TCP_MSS_UNIT));
 		_lb_mss_actionPerformed();
-		
+
 		tcpNoDelay.setSelected(p.getBoolean(KEY_TCP_NO_DELAY_ENABLED, DEFAULT_TCP_NO_DELAY_ENABLED));
 		_tcpNoDelay_actionPerformed();
-		
+
 		udpBandwidth.setValue(p.getDouble(KEY_UDP_BANDWIDTH, DEFAULT_UDP_BANDWIDTH));
 		udpBandwidthUnit.setSelectedItem(p.getSpeedUnit(KEY_UDP_BANDWIDTH_UNIT, DEFAULT_UDP_BANDWIDTH_UNIT));
-		
+
 		lb_udpBufferSize.setSelected(p.getBoolean(KEY_UDP_BUFFER_SIZE_ENABLED, DEFAULT_UDP_BUFFER_SIZE_ENABLED));
 		udpBufferSize.setValue(p.getDouble(KEY_UDP_BUFFER_SIZE, DEFAULT_UDP_BUFFER_SIZE));
 		udpBufferSizeUnit.setSelectedItem(p.getUnit(KEY_UDP_BUFFER_SIZE_UNIT, DEFAULT_UDP_BUFFER_SIZE_UNIT));
 		_lb_udpBufferSize_actionPerformed();
-		
+
 		lb_udpPacketSize.setSelected(p.getBoolean(KEY_UDP_PACKET_SIZE_ENABLED, DEFAULT_UDP_PACKET_SIZE_ENABLED));
 		udpPacketSize.setValue(p.getDouble(KEY_UDP_PACKET_SIZE, DEFAULT_UDP_PACKET_SIZE));
 		udpPacketSizeUnit.setSelectedItem(p.getUnit(KEY_UDP_PACKET_SIZE_UNIT, DEFAULT_UDP_PACKET_SIZE_UNIT));
 		_lb_udpPacketSize_actionPerformed();
-		
+
 		// IP layer panel
 		TTL.setValue(p.getInteger(KEY_TTL, DEFAULT_TTL));
 		tos.setSelectedItem(p.getTosOption(KEY_TOS, DEFAULT_TOS));
 		bindhost.setText(p.getString(KEY_BIND_TO_HOST, DEFAULT_BIND_TO_HOST));
-		
+
 		ipv6.setSelected(!p.getBoolean(KEY_IPV6_ENABLED, DEFAULT_IPV6_ENABLED));
 		ipv6.doClick();
 	}
-	
-	
-	private IPerfProperties getCurrentConfiguration()
-	{
+
+	private IPerfProperties getCurrentConfiguration() {
 		IPerfProperties p = new IPerfProperties(true);
-		
+
 		// quickstart panel
 		p.put(KEY_MODE, serverModeRadioButton.isSelected() ? "server" : "client");
 		p.put(KEY_SERVER_ADDRESS, serverAddress.getText());
@@ -318,57 +306,56 @@ public class JPerfUI extends JFrame
 		p.put(KEY_LISTEN_PORT, listenPort.getValue());
 		p.put(KEY_PARALLEL_STREAMS, simultaneousConnectionsNumber.getValue());
 		p.put(KEY_NUM_CONNECTIONS, connectionsLimitNumber.getValue());
-		
+
 		// application layer panel
 		p.put(KEY_COMPATIBILITY_MODE_ENABLED, compatibilityMode.isSelected());
 		p.put(KEY_TRANSMIT, transmit.getValue());
 		p.put(KEY_TRANSMIT_UNIT, transmitSecondsRadioButton.isSelected() ? "seconds" : "bytes");
-		p.put(KEY_OUTPUT_FORMAT, (IperfUnit)formatList.getSelectedItem());
+		p.put(KEY_OUTPUT_FORMAT, (IperfUnit) formatList.getSelectedItem());
 		p.put(KEY_REPORT_INTERVAL, interval.getValue());
 		p.put(KEY_TEST_MODE_DUAL_ENABLED, dualMode.isSelected());
 		p.put(KEY_TEST_MODE_TRADE_ENABLED, tradeMode.isSelected());
 		p.put(KEY_TEST_MODE_PORT, testPort.getValue());
 		p.put(KEY_PRINT_MSS_ENABLED, printMSS.isSelected());
-		
+
 		// transport layer panel
 		p.put(KEY_TRANSPORT_PROTOCOL, udpRadioButton.isSelected() ? "udp" : "tcp");
-		
+
 		p.put(KEY_TCP_BUFFER_LENGTH_ENABLED, lb_tcpBufferLength.isSelected());
 		p.put(KEY_TCP_BUFFER_LENGTH, tcpBufferLength.getValue());
-		p.put(KEY_TCP_BUFFER_LENGTH_UNIT, (IperfUnit)tcpBufferSizeUnit.getSelectedItem());
-		
+		p.put(KEY_TCP_BUFFER_LENGTH_UNIT, (IperfUnit) tcpBufferSizeUnit.getSelectedItem());
+
 		p.put(KEY_TCP_WINDOW_SIZE_ENABLED, lb_tcpWindowSize.isSelected());
 		p.put(KEY_TCP_WINDOW_SIZE, tcpWindowSize.getValue());
-		p.put(KEY_TCP_WINDOW_SIZE_UNIT, (IperfUnit)tcpWindowSizeUnit.getSelectedItem());
-		
+		p.put(KEY_TCP_WINDOW_SIZE_UNIT, (IperfUnit) tcpWindowSizeUnit.getSelectedItem());
+
 		p.put(KEY_TCP_MSS_ENABLED, lb_mss.isSelected());
 		p.put(KEY_TCP_MSS, mss.getValue());
-		p.put(KEY_TCP_MSS_UNIT, (IperfUnit)mssUnit.getSelectedItem());
-		
+		p.put(KEY_TCP_MSS_UNIT, (IperfUnit) mssUnit.getSelectedItem());
+
 		p.put(KEY_TCP_NO_DELAY_ENABLED, tcpNoDelay.isSelected());
-		
+
 		p.put(KEY_UDP_BANDWIDTH, udpBandwidth.getValue());
-		p.put(KEY_UDP_BANDWIDTH_UNIT, (IperfSpeedUnit)udpBandwidthUnit.getSelectedItem());
-		
+		p.put(KEY_UDP_BANDWIDTH_UNIT, (IperfSpeedUnit) udpBandwidthUnit.getSelectedItem());
+
 		p.put(KEY_UDP_BUFFER_SIZE_ENABLED, lb_udpBufferSize.isSelected());
 		p.put(KEY_UDP_BUFFER_SIZE, udpBufferSize.getValue());
-		p.put(KEY_UDP_BUFFER_SIZE_UNIT, (IperfUnit)udpBufferSizeUnit.getSelectedItem());
-		
+		p.put(KEY_UDP_BUFFER_SIZE_UNIT, (IperfUnit) udpBufferSizeUnit.getSelectedItem());
+
 		p.put(KEY_UDP_PACKET_SIZE_ENABLED, lb_udpPacketSize.isSelected());
 		p.put(KEY_UDP_PACKET_SIZE, udpPacketSize.getValue());
-		p.put(KEY_UDP_PACKET_SIZE_UNIT, (IperfUnit)udpPacketSizeUnit.getSelectedItem());
-		
+		p.put(KEY_UDP_PACKET_SIZE_UNIT, (IperfUnit) udpPacketSizeUnit.getSelectedItem());
+
 		// IP layer panel
 		p.put(KEY_TTL, TTL.getValue());
-		p.put(KEY_TOS, (TosOption)tos.getSelectedItem());
+		p.put(KEY_TOS, (TosOption) tos.getSelectedItem());
 		p.put(KEY_BIND_TO_HOST, bindhost.getText());
 		p.put(KEY_IPV6_ENABLED, ipv6.isSelected());
-		
+
 		return p;
 	}
-	
-	private void setClientModeSelected(boolean clientModeSelected)
-	{
+
+	private void setClientModeSelected(boolean clientModeSelected) {
 		serverAddress.setEnabled(clientModeSelected);
 		lb_serverAddress.setEnabled(clientModeSelected);
 
@@ -389,8 +376,7 @@ public class JPerfUI extends JFrame
 		testPort.setEnabled(!compatibilityMode.isSelected() && iperfVersion >= 1.7 && clientModeSelected);
 	}
 
-	private void setServerModeSelected(boolean serverModeSelected)
-	{
+	private void setServerModeSelected(boolean serverModeSelected) {
 		// set default values for compatibility
 		lb_clientLimit.setEnabled(false);
 		clientLimit.setEnabled(false);
@@ -422,8 +408,7 @@ public class JPerfUI extends JFrame
 		lb_TTL.setEnabled(!serverModeSelected);
 		TTL.setEnabled(!serverModeSelected);
 
-		if (iperfVersion >= 1.7)
-		{
+		if (iperfVersion >= 1.7) {
 			lb_clientLimit.setEnabled(serverModeSelected);
 			clientLimit.setEnabled(serverModeSelected);
 
@@ -435,11 +420,9 @@ public class JPerfUI extends JFrame
 		listenPort.setEnabled(serverModeSelected);
 	}
 
-	private JPanel getQuickStartPanel()
-	{
-		if (quickStartPanel == null)
-		{
-			FormLayoutBuilder applicationForm = new FormLayoutBuilder(5, new FormLayoutColumn(Alignment.left, true));
+	private JPanel getQuickStartPanel() {
+		if (quickStartPanel == null) {
+			FormLayoutBuilder applicationForm = new FormLayoutBuilder(5, new FormLayoutColumn(Alignment.LEFT, true));
 
 			iperfCommandLabel = new JTextField("");
 			iperfCommandLabel.setEditable(false);
@@ -458,7 +441,8 @@ public class JPerfUI extends JFrame
 			applicationForm.addCell(clientModeRadioButton);
 			lb_serverAddress = new JLabel("Server address");
 			lb_serverAddress.setOpaque(false);
-			lb_serverAddress.setToolTipText("Specify what server the Iperf client should connect to   (command line: -c)");
+			lb_serverAddress
+					.setToolTipText("Specify what server the Iperf client should connect to   (command line: -c)");
 			serverAddress = new JTextField(15);
 			serverAddress.addKeyListener(this);
 			lb_serverPort = new JLabel("Port");
@@ -473,7 +457,8 @@ public class JPerfUI extends JFrame
 			applicationForm.addCell(new JLabel());
 			lb_simultaneousConnectionsNumber = new JLabel("Parallel Streams");
 			lb_simultaneousConnectionsNumber.setOpaque(false);
-			lb_simultaneousConnectionsNumber.setToolTipText("The number of simultaneous connections to make to the server. Default is 1.   (command line: -P)");
+			lb_simultaneousConnectionsNumber.setToolTipText(
+					"The number of simultaneous connections to make to the server. Default is 1.   (command line: -P)");
 			simultaneousConnectionsNumber = new IntegerSpinner(1, Integer.MAX_VALUE, 1);
 			simultaneousConnectionsNumber.addChangeListener(this);
 
@@ -507,7 +492,8 @@ public class JPerfUI extends JFrame
 			applicationForm.addEmptyCell();
 			lb_connectionsLimitNumber = new JLabel("Num Connections");
 			lb_connectionsLimitNumber.setOpaque(false);
-			lb_connectionsLimitNumber.setToolTipText("The number of connections to handle by the server before closing. Default is 0 (handle forever)   (command line: -P)");
+			lb_connectionsLimitNumber.setToolTipText(
+					"The number of connections to handle by the server before closing. Default is 0 (handle forever)   (command line: -P)");
 			applicationForm.addCell(lb_connectionsLimitNumber);
 			connectionsLimitNumber = new IntegerSpinner(0, Integer.MAX_VALUE, 0);
 			connectionsLimitNumber.addChangeListener(this);
@@ -526,19 +512,17 @@ public class JPerfUI extends JFrame
 		return quickStartPanel;
 	}
 
-	private JPanel getApplicationPanel()
-	{
-		if (applicationPanel == null)
-		{
+	private JPanel getApplicationPanel() {
+		if (applicationPanel == null) {
 			FormLayoutBuilder applicationForm = new FormLayoutBuilder(3);
 
 			// Compatibility mode?
 			compatibilityMode = new JCheckBox("Enable Compatibility Mode");
 			applicationForm.addCell(compatibilityMode, 3);
-			compatibilityMode.setToolTipText("Compatibility mode allows for use with older version of iperf   (command line: -C)");
+			compatibilityMode.setToolTipText(
+					"Compatibility mode allows for use with older version of iperf   (command line: -C)");
 			compatibilityMode.setSelected(false);
-			if (iperfVersion < 1.7)
-			{
+			if (iperfVersion < 1.7) {
 				compatibilityMode.setEnabled(false);
 			}
 			compatibilityMode.addActionListener(this);
@@ -547,7 +531,8 @@ public class JPerfUI extends JFrame
 
 			// num buffers to transmit
 			lb_transmit = new JLabel("Transmit");
-			lb_transmit.setToolTipText("Time to transmit, or number of buffers to transmit. Default is 10secs   (command line: -t, -n)");
+			lb_transmit.setToolTipText(
+					"Time to transmit, or number of buffers to transmit. Default is 10secs   (command line: -t, -n)");
 			transmit = new IntegerSpinner(0, Integer.MAX_VALUE, 10);
 			transmit.addChangeListener(this);
 			applicationForm.addCell(lb_transmit);
@@ -571,7 +556,8 @@ public class JPerfUI extends JFrame
 
 			// output format
 			lb_outputFormat = new JLabel("Output Format");
-			lb_outputFormat.setToolTipText("Format to print bandwidth numbers in. Adaptive formats choose between kilo- and mega-   (command line: -f)");
+			lb_outputFormat.setToolTipText(
+					"Format to print bandwidth numbers in. Adaptive formats choose between kilo- and mega-   (command line: -f)");
 			formatList = new JComboBox<Object>(IperfUnit.getAllowedOutputFormatUnits());
 			formatList.addActionListener(this);
 			formatList.setSelectedItem(IperfUnit.KBITS);
@@ -582,7 +568,8 @@ public class JPerfUI extends JFrame
 
 			// interval of reports
 			lb_reportInterval = new JLabel("Report Interval");
-			lb_reportInterval.setToolTipText("Sets the interval time (secs) between periodic bandwidth, jitter, and loss reports   (command line: -i)");
+			lb_reportInterval.setToolTipText(
+					"Sets the interval time (secs) between periodic bandwidth, jitter, and loss reports   (command line: -i)");
 			interval = new IntegerSpinner(1, Integer.MAX_VALUE, 1);
 			interval.addChangeListener(this);
 			applicationForm.addCell(lb_reportInterval);
@@ -595,21 +582,23 @@ public class JPerfUI extends JFrame
 			applicationForm.addCell(lb_testingMode);
 			dualMode = new JCheckBox("Dual");
 			dualMode.addActionListener(this);
-			dualMode.setToolTipText("Cause the server to connect back to the client immediately and run tests simultaneously   (command line: -d)");
+			dualMode.setToolTipText(
+					"Cause the server to connect back to the client immediately and run tests simultaneously   (command line: -d)");
 			tradeMode = new JCheckBox("Trade");
 			tradeMode.addActionListener(this);
-			tradeMode.setToolTipText("Cause the server to connect back to the client following termination of the client   (command line: -r)");
+			tradeMode.setToolTipText(
+					"Cause the server to connect back to the client following termination of the client   (command line: -r)");
 			applicationForm.addCompositeCell(dualMode, tradeMode);
 			applicationForm.newLine();
 			lb_testPort = new JLabel("test port");
-			lb_testPort.setToolTipText("This specifies the port that the server will connect back to the client on   (command line: -L)");
+			lb_testPort.setToolTipText(
+					"This specifies the port that the server will connect back to the client on   (command line: -L)");
 			testPort = new IntegerSpinner(1, Integer.MAX_VALUE, 5001);
 			testPort.addChangeListener(this);
 			applicationForm.addEmptyCell();
 			applicationForm.addCompositeCell(lb_testPort, testPort);
 
-			if (iperfVersion < 1.7)
-			{
+			if (iperfVersion < 1.7) {
 				lb_testingMode.setEnabled(false);
 				dualMode.setEnabled(false);
 				tradeMode.setEnabled(false);
@@ -621,7 +610,8 @@ public class JPerfUI extends JFrame
 
 			// file to transmit
 			lb_representativeFile = new JLabel("Representative File");
-			lb_representativeFile.setToolTipText("Use a representative stream to measure bandwidth   (command line: -F)");
+			lb_representativeFile
+					.setToolTipText("Use a representative stream to measure bandwidth   (command line: -F)");
 			applicationForm.addCell(lb_representativeFile);
 			representativeFile = new JTextField(14);
 			representativeFile.addKeyListener(this);
@@ -633,8 +623,7 @@ public class JPerfUI extends JFrame
 			browse.addActionListener(this);
 			applicationForm.addCompositeCell(representativeFile, browse);
 
-			if (iperfVersion < 1.2)
-			{
+			if (iperfVersion < 1.2) {
 				representativeFile.setEnabled(false);
 				lb_representativeFile.setEnabled(false);
 				browse.setEnabled(false);
@@ -657,11 +646,9 @@ public class JPerfUI extends JFrame
 		return applicationPanel;
 	}
 
-	private JPanel getTransportPanel()
-	{
-		if (transportPanel == null)
-		{
-			FormLayoutBuilder transportForm = new FormLayoutBuilder(1, new FormLayoutColumn(Alignment.fill));
+	private JPanel getTransportPanel() {
+		if (transportPanel == null) {
+			FormLayoutBuilder transportForm = new FormLayoutBuilder(1, new FormLayoutColumn(Alignment.FILL));
 
 			// radio buttons for TCP/UDP
 			transportForm.addCell(new JLabel("Choose the protocol to use"));
@@ -694,8 +681,7 @@ public class JPerfUI extends JFrame
 		return transportPanel;
 	}
 
-	private void setTCPOptionsEnabled(boolean enabled)
-	{
+	private void setTCPOptionsEnabled(boolean enabled) {
 		lb_tcpBufferLength.setEnabled(enabled);
 		tcpBufferLength.setEnabled(enabled && lb_tcpBufferLength.isSelected());
 		tcpBufferSizeUnit.setEnabled(enabled && lb_tcpBufferLength.isSelected());
@@ -716,16 +702,15 @@ public class JPerfUI extends JFrame
 		TTL.setEnabled(!enabled);
 	}
 
-	private JPanel getTCPPanel()
-	{
-		if (tcpPanel == null)
-		{
-			FormLayoutBuilder tcpForm = new FormLayoutBuilder(3, new FormLayoutColumn(Alignment.fill));
+	private JPanel getTCPPanel() {
+		if (tcpPanel == null) {
+			FormLayoutBuilder tcpForm = new FormLayoutBuilder(3, new FormLayoutColumn(Alignment.FILL));
 			tcpForm.addCell(tcpRadioButton);
 			tcpForm.newLine();
 			// buffer length
 			lb_tcpBufferLength = new JCheckBox("Buffer Length");
-			lb_tcpBufferLength.setToolTipText("Read/Write buffer length. Use 'K' or 'M' for kilo/mega bytes. (i.e 8K)   (command line: -l)");
+			lb_tcpBufferLength.setToolTipText(
+					"Read/Write buffer length. Use 'K' or 'M' for kilo/mega bytes. (i.e 8K)   (command line: -l)");
 			lb_tcpBufferLength.addActionListener(this);
 			tcpForm.addCell(lb_tcpBufferLength);
 			tcpBufferLength = new DoubleSpinner(1, 9999, 8);
@@ -740,7 +725,8 @@ public class JPerfUI extends JFrame
 
 			// set window size
 			lb_tcpWindowSize = new JCheckBox("TCP Window Size");
-			lb_tcpWindowSize.setToolTipText("Set TCP window size. Use 'K' or 'M' for kilo/mega bytes. (i.e 8K)   (command line: -w)");
+			lb_tcpWindowSize.setToolTipText(
+					"Set TCP window size. Use 'K' or 'M' for kilo/mega bytes. (i.e 8K)   (command line: -w)");
 			lb_tcpWindowSize.addActionListener(this);
 			tcpForm.addCell(lb_tcpWindowSize);
 			tcpWindowSize = new DoubleSpinner(1, 9999, 8);
@@ -755,7 +741,8 @@ public class JPerfUI extends JFrame
 
 			// attempt to set MSS
 			lb_mss = new JCheckBox("Max Segment Size");
-			lb_mss.setToolTipText("Attempt to set max segment size. Use 'K' or 'M' for kilo/mega bytes. (i.e 8K)   (command line: -M)");
+			lb_mss.setToolTipText(
+					"Attempt to set max segment size. Use 'K' or 'M' for kilo/mega bytes. (i.e 8K)   (command line: -M)");
 			lb_mss.addActionListener(this);
 			tcpForm.addCell(lb_mss);
 			mss = new DoubleSpinner(1, 9999, 8);
@@ -784,8 +771,7 @@ public class JPerfUI extends JFrame
 		return tcpPanel;
 	}
 
-	private void setUDPOptionsEnabled(boolean enabled)
-	{
+	private void setUDPOptionsEnabled(boolean enabled) {
 		lb_udpBufferSize.setEnabled(enabled);
 		udpBufferSize.setEnabled(enabled && lb_udpBufferSize.isSelected());
 		udpBufferSizeUnit.setEnabled(enabled && lb_udpBufferSize.isSelected());
@@ -803,18 +789,17 @@ public class JPerfUI extends JFrame
 		TTL.setEnabled(!serverModeRadioButton.isSelected() && enabled);
 	}
 
-	private JPanel getUDPPanel()
-	{
-		if (udpPanel == null)
-		{
-			FormLayoutBuilder udpForm = new FormLayoutBuilder(3, new FormLayoutColumn(Alignment.fill));
+	private JPanel getUDPPanel() {
+		if (udpPanel == null) {
+			FormLayoutBuilder udpForm = new FormLayoutBuilder(3, new FormLayoutColumn(Alignment.FILL));
 
 			udpForm.addCell(udpRadioButton);
 			udpForm.newLine();
 
 			// bandwidth
 			lb_udpBandwidth = new JLabel("UDP Bandwidth");
-			lb_udpBandwidth.setToolTipText("Set bandwidth to send in bits/sec. Use 'K' or 'M' for kilo/mega bits. (i.e 8K)   (command line: -b)");
+			lb_udpBandwidth.setToolTipText(
+					"Set bandwidth to send in bits/sec. Use 'K' or 'M' for kilo/mega bits. (i.e 8K)   (command line: -b)");
 			udpForm.addCell(lb_udpBandwidth);
 			udpBandwidth = new DoubleSpinner(1, 9999, 1);
 			udpBandwidth.addChangeListener(this);
@@ -828,7 +813,8 @@ public class JPerfUI extends JFrame
 
 			// buffer size
 			lb_udpBufferSize = new JCheckBox("UDP Buffer Size");
-			lb_udpBufferSize.setToolTipText("Set UDP buffer size. Use 'K' or 'M' for kilo/mega bytes. (i.e 8K)   (command line: -w)");
+			lb_udpBufferSize.setToolTipText(
+					"Set UDP buffer size. Use 'K' or 'M' for kilo/mega bytes. (i.e 8K)   (command line: -w)");
 			lb_udpBufferSize.addActionListener(this);
 			udpForm.addCell(lb_udpBufferSize);
 			udpBufferSize = new DoubleSpinner(1, 9999, 8);
@@ -843,7 +829,8 @@ public class JPerfUI extends JFrame
 
 			// packet size
 			lb_udpPacketSize = new JCheckBox("UDP Packet Size");
-			lb_udpPacketSize.setToolTipText("Set UDP datagram buffer size. Use 'K' or 'M' for kilo/mega bytes. (i.e 1470)   (command line: -l)");
+			lb_udpPacketSize.setToolTipText(
+					"Set UDP datagram buffer size. Use 'K' or 'M' for kilo/mega bytes. (i.e 1470)   (command line: -l)");
 			lb_udpPacketSize.addActionListener(this);
 			udpForm.addCell(lb_udpPacketSize);
 			udpPacketSize = new DoubleSpinner(1, 9999, 1500);
@@ -863,10 +850,8 @@ public class JPerfUI extends JFrame
 		return udpPanel;
 	}
 
-	private JPanel getIPPanel()
-	{
-		if (ipPanel == null)
-		{
+	private JPanel getIPPanel() {
+		if (ipPanel == null) {
 			FormLayoutBuilder ipForm = new FormLayoutBuilder(2);
 
 			// TTL
@@ -881,7 +866,8 @@ public class JPerfUI extends JFrame
 
 			// TOS
 			lb_tos = new JLabel("Type of Service");
-			lb_tos.setToolTipText("The type-of-service for outgoing packets. (Many routers ignore the TOS field)   (command line: -S)");
+			lb_tos.setToolTipText(
+					"The type-of-service for outgoing packets. (Many routers ignore the TOS field)   (command line: -S)");
 			ipForm.addCell(lb_tos);
 			tos = new JComboBox<Object>(TosOption.values());
 			tos.addActionListener(this);
@@ -892,7 +878,8 @@ public class JPerfUI extends JFrame
 
 			// bind to a specific host
 			lb_bindHost = new JLabel("Bind to Host");
-			lb_bindHost.setToolTipText("Bind to host, one of this machine's addresses. For multihomed hosts.   (command line: -B)");
+			lb_bindHost.setToolTipText(
+					"Bind to host, one of this machine's addresses. For multihomed hosts.   (command line: -B)");
 			ipForm.addCell(lb_bindHost);
 			bindhost = new JTextField(18);
 			bindhost.addKeyListener(this);
@@ -905,8 +892,7 @@ public class JPerfUI extends JFrame
 			ipForm.addCell(ipv6);
 			ipv6.setToolTipText("Bind to an IPv6 address   (command line: -V)");
 			ipv6.setSelected(false);
-			if (iperfVersion < 1.6)
-			{
+			if (iperfVersion < 1.6) {
 				ipv6.setEnabled(false);
 			}
 			ipv6.addActionListener(this);
@@ -920,56 +906,55 @@ public class JPerfUI extends JFrame
 	}
 
 	/*
-	 * This creates the top connection panel that lets the user select
-	 * client/server mode tcp or udp, and the server/port. Of course it has the
-	 * usual run/stop buttons.
+	 * This creates the top connection panel that lets the user select client/server
+	 * mode tcp or udp, and the server/port. Of course it has the usual run/stop
+	 * buttons.
 	 */
-	public void init()
-	{
+	public void init() {
 		addWindowListener(this);
-		
+
 		setLayout(new BorderLayout());
-		
+
 		saveFileChooser = new JFileChooser();
 		saveFileChooser.setFileFilter(new ExtensionFileFilter("JPerf files", ".jperf"));
-		
+
 		loadFileChooser = new JFileChooser();
 		loadFileChooser.setFileFilter(new ExtensionFileFilter("JPerf files", ".jperf"));
-		
+
 		// set up our menu
 		menuBar = new JMenuBar();
 		menuJPerf = new JMenu("JPerf");
 		menuJPerf.setMnemonic(KeyEvent.VK_H);
-		
+
 		menuJPerfOpen = new JMenuItem("Open configuration...");
 		menuJPerfOpen.setActionCommand("LoadConfiguration");
 		menuJPerfOpen.addActionListener(this);
 		menuJPerf.add(menuJPerfOpen);
-		
+
 		menuJPerfSaveAs = new JMenuItem("Save configuration as...");
 		menuJPerfSaveAs.setActionCommand("SaveConfiguration");
 		menuJPerfSaveAs.addActionListener(this);
 		menuJPerf.add(menuJPerfSaveAs);
-		
+
 		menuJPerfRestoreDefaults = new JMenuItem("Restore default configuration");
 		menuJPerfRestoreDefaults.setActionCommand("Restore");
 		menuJPerfRestoreDefaults.addActionListener(this);
 		menuJPerf.add(menuJPerfRestoreDefaults);
-		
+
 		menuJPerf.addSeparator();
-		
+
 		menuJPerfAbout = new JMenuItem("About...");
 		menuJPerfAbout.setActionCommand("About");
 		menuJPerfAbout.addActionListener(this);
 		menuJPerf.add(menuJPerfAbout);
-		
+
 		menuJPerf.addSeparator();
-		
+
 		menuJPerfQuit = new JMenuItem("Quit");
 		menuJPerfQuit.setActionCommand("Quit");
 		menuJPerfQuit.addActionListener(this);
 		menuJPerf.add(menuJPerfQuit);
-		
+
 		menuBar.add(menuJPerf);
 		this.setJMenuBar(menuBar);
 
@@ -992,35 +977,35 @@ public class JPerfUI extends JFrame
 		stopIperf.setActionCommand("Stop");
 		stopIperf.addActionListener(this);
 		stopIperf.setEnabled(false);
-		
+
 		// save configuration button
 		saveConfiguration = new JButton(new ImageIcon(JPerfUI.class.getResource("filesaveas.png")));
 		saveConfiguration.setToolTipText("Save configuration");
 		saveConfiguration.setActionCommand("SaveConfiguration");
 		saveConfiguration.addActionListener(this);
-		
+
 		// load configuration button
 		loadConfiguration = new JButton(new ImageIcon(JPerfUI.class.getResource("fileopen.png")));
 		loadConfiguration.setToolTipText("Load configuration");
 		loadConfiguration.setActionCommand("LoadConfiguration");
 		loadConfiguration.addActionListener(this);
-		
+
 		// restore defaults button
 		restoreDefaults = new JButton(new ImageIcon(JPerfUI.class.getResource("reload.png")));
 		restoreDefaults.setToolTipText("Restore default settings");
 		restoreDefaults.setActionCommand("Restore");
 		restoreDefaults.addActionListener(this);
-		
+
 		JPanel slrContainer = new JPanel(new GridLayout(1, 3));
 		slrContainer.add(saveConfiguration);
 		slrContainer.add(loadConfiguration);
 		slrContainer.add(restoreDefaults);
-		
+
 		JPanel buttonContainer = new JPanel(new GridLayout(3, 1));
 		buttonContainer.add(startIperf);
 		buttonContainer.add(stopIperf);
 		buttonContainer.add(slrContainer);
-		
+
 		toolbar.add(buttonContainer);
 		add(toolbar, BorderLayout.PAGE_START);
 
@@ -1055,7 +1040,7 @@ public class JPerfUI extends JFrame
 
 		centerPanel.setLeftComponent(getGraphPanel());
 		centerPanel.setRightComponent(getOutputPanel());
-		
+
 		centerPanel.setDividerLocation(300);
 		centerPanel.setResizeWeight(1);
 		centerPanel.setOneTouchExpandable(true);
@@ -1065,54 +1050,48 @@ public class JPerfUI extends JFrame
 		createAbout();
 	}
 
-	private JPanel	outputPanel	= null;
+	private JPanel outputPanel = null;
 
-	public void logMessage(String message)
-	{
+	public void logMessage(String message) {
 		output.append(message + "\n");
 		output.setCaretPosition(output.getDocument().getLength());
 	}
 
-	public void addNewStreamBandwidthMeasurement(int streamID, Measurement measurement)
-	{
-		chartPanel.maybeAddNewSeries("" + streamID, "#"+streamID+": ", "Jitter: ", SeriesColorGenerator.nextColor());
+	public void addNewStreamBandwidthMeasurement(int streamID, Measurement measurement) {
+		chartPanel.maybeAddNewSeries("" + streamID, "#" + streamID + ": ", "Jitter: ",
+				SeriesColorGenerator.nextColor());
 		chartPanel.addSeriesBandwidthMeasurement("" + streamID, measurement);
 	}
 
-	public void addNewStreamBandwidthAndJitterMeasurement(int streamID, Measurement bandwidth, Measurement jitter)
-	{
-		chartPanel.maybeAddNewSeries("" + streamID, "#"+streamID+": ",  "Jitter: ", SeriesColorGenerator.nextColor());
+	public void addNewStreamBandwidthAndJitterMeasurement(int streamID, Measurement bandwidth, Measurement jitter) {
+		chartPanel.maybeAddNewSeries("" + streamID, "#" + streamID + ": ", "Jitter: ",
+				SeriesColorGenerator.nextColor());
 		chartPanel.addSeriesBandwidthAndJitterMeasurement("" + streamID, bandwidth, jitter);
 	}
 
-	public void setStartedStatus()
-	{
+	public void setStartedStatus() {
 		startIperf.setEnabled(false);
 		stopIperf.setEnabled(true);
 	}
 
-	public void setStoppedStatus()
-	{
+	public void setStoppedStatus() {
 		stopIperf.setEnabled(false);
 		startIperf.setEnabled(true);
 	}
 
-	private JPanel getGraphPanel()
-	{
-		if (chartPanel == null)
-		{
-			chartPanel = new IPerfChartPanel("Bandwidth", "KBits", "ms", "Time", "Bandwidth", "Jitter", 1.0, 20.0, 1.0, Color.black, Color.white, Color.gray);
+	private JPanel getGraphPanel() {
+		if (chartPanel == null) {
+			chartPanel = new IPerfChartPanel("Bandwidth", "KBits", "ms", "Time", "Bandwidth", "Jitter", 1.0, 20.0, 1.0,
+					Color.black, Color.white, Color.gray);
 		}
 
 		return chartPanel;
 	}
 
-	private IPerfChartPanel	chartPanel	= null;
+	private IPerfChartPanel chartPanel = null;
 
-	private JPanel getOutputPanel()
-	{
-		if (outputPanel == null)
-		{
+	private JPanel getOutputPanel() {
+		if (outputPanel == null) {
 			outputPanel = new JPanel(new BorderLayout());
 
 			tabbedPane = new JTabbedPane();
@@ -1145,35 +1124,26 @@ public class JPerfUI extends JFrame
 		return outputPanel;
 	}
 
-	public void updateIperfCommandLabel()
-	{
-		try
-		{
+	public void updateIperfCommandLabel() {
+		try {
 			validateFormOptions();
 			iperfCommandLabel.setForeground(Color.black);
 			iperfCommandLabel.setText(options);
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			iperfCommandLabel.setForeground(Color.red);
 			iperfCommandLabel.setText(ex.getMessage());
 		}
 	}
-	
-	private void _compatibilityMode_actionPerformed()
-	{
-		if (compatibilityMode.isSelected())
-		{
+
+	private void _compatibilityMode_actionPerformed() {
+		if (compatibilityMode.isSelected()) {
 			lb_testingMode.setEnabled(false);
 			dualMode.setEnabled(false);
 			tradeMode.setEnabled(false);
 			lb_testPort.setEnabled(false);
 			testPort.setEnabled(false);
-		}
-		else
-		{
-			if (!serverModeRadioButton.isSelected())
-			{
+		} else {
+			if (!serverModeRadioButton.isSelected()) {
 				lb_testingMode.setEnabled(true);
 				dualMode.setEnabled(true);
 				tradeMode.setEnabled(true);
@@ -1182,293 +1152,215 @@ public class JPerfUI extends JFrame
 			}
 		}
 	}
-	
-	private void _lb_clientLimit_actionPerformed()
-	{
+
+	private void _lb_clientLimit_actionPerformed() {
 		// nothing
 	}
-	
-	private void _transmitBytesRadioButton_actionPerformed()
-	{
+
+	private void _transmitBytesRadioButton_actionPerformed() {
 		// nothing
 	}
-	
-	private void _transmitSecondsRadioButton_actionPerformed()
-	{
+
+	private void _transmitSecondsRadioButton_actionPerformed() {
 		// nothing
 	}
-	
-	private void _dualMode_actionPerformed()
-	{
+
+	private void _dualMode_actionPerformed() {
 		// nothing
 	}
-	
-	private void _tradeMode_actionPerformed()
-	{
+
+	private void _tradeMode_actionPerformed() {
 		// nothing
 	}
-	
-	private void _printMSS_actionPerformed()
-	{
+
+	private void _printMSS_actionPerformed() {
 		// nothing
 	}
-	
-	private void _lb_tcpBufferLength_actionPerformed()
-	{
+
+	private void _lb_tcpBufferLength_actionPerformed() {
 		tcpBufferLength.setEnabled(lb_tcpBufferLength.isSelected());
 		tcpBufferSizeUnit.setEnabled(lb_tcpBufferLength.isSelected());
 	}
-	
-	private void _lb_tcpWindowSize_actionPerformed()
-	{
+
+	private void _lb_tcpWindowSize_actionPerformed() {
 		tcpWindowSize.setEnabled(lb_tcpWindowSize.isSelected());
 		tcpWindowSizeUnit.setEnabled(lb_tcpWindowSize.isSelected());
 	}
-	
-	private void _lb_mss_actionPerformed()
-	{
+
+	private void _lb_mss_actionPerformed() {
 		mss.setEnabled(lb_mss.isSelected());
 		mssUnit.setEnabled(lb_mss.isSelected());
 	}
-	
-	private void _lb_udpBufferSize_actionPerformed()
-	{
+
+	private void _lb_udpBufferSize_actionPerformed() {
 		udpBufferSize.setEnabled(lb_udpBufferSize.isSelected());
 		udpBufferSizeUnit.setEnabled(lb_udpBufferSize.isSelected());
 	}
-	
-	private void _lb_udpPacketSize_actionPerformed()
-	{
+
+	private void _lb_udpPacketSize_actionPerformed() {
 		udpPacketSize.setEnabled(lb_udpPacketSize.isSelected());
 		udpPacketSizeUnit.setEnabled(lb_udpPacketSize.isSelected());
 	}
-	
-	private void _tcpNoDelay_actionPerformed()
-	{
+
+	private void _tcpNoDelay_actionPerformed() {
 		// nothing
 	}
-	
-	public void actionPerformed(final ActionEvent e)
-	{
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			public void run()
-			{
+
+	public void actionPerformed(final ActionEvent e) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
 				Object source = e.getSource();
-				if (source == ipv6)
-				{
-					if (ipv6.isSelected())
-					{
-						if (udpRadioButton.isSelected())
-						{
+				if (source == ipv6) {
+					if (ipv6.isSelected()) {
+						if (udpRadioButton.isSelected()) {
 							udpBufferSize.setValue(1450);
 						}
-					}
-					else if (udpRadioButton.isSelected())
-					{
+					} else if (udpRadioButton.isSelected()) {
 						udpBufferSize.setValue(1470);
 					}
-				}
-				else if (source == compatibilityMode)
-				{
+				} else if (source == compatibilityMode) {
 					_compatibilityMode_actionPerformed();
-				}
-				else if (source == lb_clientLimit)
-				{
+				} else if (source == lb_clientLimit) {
 					_lb_clientLimit_actionPerformed();
-				}
-				else if (source == transmitBytesRadioButton)
-				{
+				} else if (source == transmitBytesRadioButton) {
 					_transmitBytesRadioButton_actionPerformed();
-				}
-				else if (source == transmitSecondsRadioButton)
-				{
+				} else if (source == transmitSecondsRadioButton) {
 					_transmitSecondsRadioButton_actionPerformed();
-				}
-				else if (source == dualMode)
-				{
+				} else if (source == dualMode) {
 					_dualMode_actionPerformed();
-				}
-				else if (source == tradeMode)
-				{
+				} else if (source == tradeMode) {
 					_tradeMode_actionPerformed();
-				}
-				else if (source == printMSS)
-				{
+				} else if (source == printMSS) {
 					_printMSS_actionPerformed();
-				}
-				else if (source == lb_tcpBufferLength)
-				{
+				} else if (source == lb_tcpBufferLength) {
 					_lb_tcpBufferLength_actionPerformed();
-				}
-				else if (source == lb_tcpWindowSize)
-				{
+				} else if (source == lb_tcpWindowSize) {
 					_lb_tcpWindowSize_actionPerformed();
-				}
-				else if (source == lb_mss)
-				{
+				} else if (source == lb_mss) {
 					_lb_mss_actionPerformed();
-				}
-				else if (source == lb_udpBufferSize)
-				{
+				} else if (source == lb_udpBufferSize) {
 					_lb_udpBufferSize_actionPerformed();
-				}
-				else if (source == lb_udpPacketSize)
-				{
+				} else if (source == lb_udpPacketSize) {
 					_lb_udpPacketSize_actionPerformed();
-				}
-				else if (source == tcpNoDelay)
-				{
+				} else if (source == tcpNoDelay) {
 					_tcpNoDelay_actionPerformed();
-				}
-				else
-				{
+				} else {
 					String command = e.getActionCommand();
-		
-					if (command == "Restore")
-					{
+
+					if (command == "Restore") {
 						applyConfiguration(defaultConfiguration);
-					}
-					else if (command == "SaveConfiguration")
-					{
+					} else if (command == "SaveConfiguration") {
 						int res = saveFileChooser.showSaveDialog(JPerfUI.this);
-						if (res == JFileChooser.APPROVE_OPTION)
-						{
+						if (res == JFileChooser.APPROVE_OPTION) {
 							File selectedFile = saveFileChooser.getSelectedFile();
-							try
-							{
+							try {
 								IPerfProperties p = getCurrentConfiguration();
-								if (!selectedFile.getName().endsWith(".jperf"))
-								{
-									selectedFile = new File(selectedFile.getAbsolutePath()+".jperf");
+								if (!selectedFile.getName().endsWith(".jperf")) {
+									selectedFile = new File(selectedFile.getAbsolutePath() + ".jperf");
 								}
 								p.saveAs(selectedFile);
-							}
-							catch (Exception e1)
-							{
+							} catch (Exception e1) {
 								e1.printStackTrace();
-								JOptionPane.showMessageDialog(JPerfUI.this, "<html>Impossible to save this configuration.<br>(cause='"+e1.getMessage()+"')</html>", "Error", JOptionPane.ERROR_MESSAGE);
+								JOptionPane
+										.showMessageDialog(JPerfUI.this,
+												"<html>Impossible to save this configuration.<br>(cause='"
+														+ e1.getMessage() + "')</html>",
+												"Error", JOptionPane.ERROR_MESSAGE);
 							}
 						}
-					}
-					else if (command == "LoadConfiguration")
-					{
+					} else if (command == "LoadConfiguration") {
 						int res = loadFileChooser.showOpenDialog(JPerfUI.this);
-						if (res == JFileChooser.APPROVE_OPTION)
-						{
+						if (res == JFileChooser.APPROVE_OPTION) {
 							File selectedFile = loadFileChooser.getSelectedFile();
-							try
-							{
+							try {
 								applyConfiguration(new IPerfProperties(selectedFile));
-							}
-							catch (Exception e1)
-							{
-								JOptionPane.showMessageDialog(JPerfUI.this, "<html>Impossible to load this configuration file.<br>(cause='"+e1.getMessage()+"')</html>", "Error", JOptionPane.ERROR_MESSAGE);
+							} catch (Exception e1) {
+								JOptionPane
+										.showMessageDialog(JPerfUI.this,
+												"<html>Impossible to load this configuration file.<br>(cause='"
+														+ e1.getMessage() + "')</html>",
+												"Error", JOptionPane.ERROR_MESSAGE);
 							}
 						}
-					}
-					else if (command == "TCP")
-					{
+					} else if (command == "TCP") {
 						setUDPOptionsEnabled(false);
 						setTCPOptionsEnabled(true);
-					}
-					else if (command == "UDP")
-					{
+					} else if (command == "UDP") {
 						setTCPOptionsEnabled(false);
 						setUDPOptionsEnabled(true);
-					}
-					else if (command == "Run")
-					{
+					} else if (command == "Run") {
 						boolean optionsReady = false;
-						try
-						{
+						try {
 							optionsReady = validateFormOptions();
-						}
-						catch (Exception ex)
-						{
-							JOptionPane.showMessageDialog(JPerfUI.this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+						} catch (Exception ex) {
+							JOptionPane.showMessageDialog(JPerfUI.this, ex.getMessage(), "Error",
+									JOptionPane.ERROR_MESSAGE);
 							return;
 						}
-		
+
 						// can not have adaptive bits for graph
 						IperfUnit of = (IperfUnit) formatList.getSelectedItem();
-						if (of == IperfUnit.ADAPTIVE_BITS || of == IperfUnit.ADAPTIVE_BYTES)
-						{
-							JOptionPane.showMessageDialog(JPerfUI.this, "The bandwidth graph will not be created because an adaptive format is selected", "Information", JOptionPane.INFORMATION_MESSAGE);
+						if (of == IperfUnit.ADAPTIVE_BITS || of == IperfUnit.ADAPTIVE_BYTES) {
+							JOptionPane.showMessageDialog(JPerfUI.this,
+									"The bandwidth graph will not be created because an adaptive format is selected",
+									"Information", JOptionPane.INFORMATION_MESSAGE);
 						}
-		
-						if (optionsReady)
-						{
+
+						if (optionsReady) {
 							// "Bandwidth", "Kbps", "Kbps", "Time", "Bitrate in Kbps", 1.0, 20.0,
 							// Color.black, Color.white, Color.gray
-							chartPanel.reconfigure(serverModeRadioButton.isSelected(), serverModeRadioButton.isSelected() ? "Bandwidth & Jitter" : "Bandwidth", formatList.getSelectedItem().toString(), "ms", transmitSecondsRadioButton
-									.isSelected() ? "Time (sec)" : "Bytes transmitted", formatList.getSelectedItem().toString() + " (BW)", "ms (Jitter)", transmit.getValue(), interval.getValue());
-		
-							if (alwaysClearOutput.isSelected())
-							{
+							chartPanel.reconfigure(serverModeRadioButton.isSelected(),
+									serverModeRadioButton.isSelected() ? "Bandwidth & Jitter" : "Bandwidth",
+									formatList.getSelectedItem().toString(), "ms",
+									transmitSecondsRadioButton.isSelected() ? "Time (sec)" : "Bytes transmitted",
+									formatList.getSelectedItem().toString() + " (BW)", "ms (Jitter)",
+									transmit.getValue(), interval.getValue());
+
+							if (alwaysClearOutput.isSelected()) {
 								output.setText("");
 							}
 							iperf = new IperfThread(serverModeRadioButton.isSelected(), options, JPerfUI.this);
 							iperf.start();
 						}
-					}
-					else if (command == "Stop")
-					{
+					} else if (command == "Stop") {
 						iperf.quit();
-					}
-					else if (command == "Clear")
-					{
+					} else if (command == "Clear") {
 						iperf.quit();
 						output.setText("");
-					}
-					else if (command == "server")
-					{
+					} else if (command == "server") {
 						setClientModeSelected(false);
 						setServerModeSelected(true);
-					}
-					else if (command == "client")
-					{
+					} else if (command == "client") {
 						setServerModeSelected(false);
 						setClientModeSelected(true);
-					}
-					else if (command == "About")
-					{
+					} else if (command == "About") {
 						JOptionPane.showMessageDialog(JPerfUI.this, aboutPanel);
-					}
-					else if (command == "Quit")
-					{
+					} else if (command == "Quit") {
 						System.exit(0);
-					}
-					else if (command == "Browse")
-					{
+					} else if (command == "Browse") {
 						JFileChooser fc = new JFileChooser();
 						int returnVal = fc.showDialog(JPerfUI.this, "Select representative file");
-						if (returnVal == JFileChooser.APPROVE_OPTION)
-						{
+						if (returnVal == JFileChooser.APPROVE_OPTION) {
 							File file = fc.getSelectedFile();
 							representativeFile.setText(file.getAbsolutePath());
 						}
-					}
-					else if (command == "Save")
-					{
+					} else if (command == "Save") {
 						JFileChooser fc = new JFileChooser();
 						int returnVal = fc.showDialog(JPerfUI.this, "Save");
-						if (returnVal == JFileChooser.APPROVE_OPTION)
-						{
+						if (returnVal == JFileChooser.APPROVE_OPTION) {
 							File file = fc.getSelectedFile();
-		
+
 							// write output of textarea to file
 							String text = new String(output.getText());
-		
-							try
-							{
+
+							try {
 								FileWriter fw = new FileWriter(file);
 								fw.write(text);
 								fw.close();
-							}
-							catch (IOException ioe)
-							{
-								JOptionPane.showMessageDialog(JPerfUI.this, "Error while saving output: " + ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+							} catch (IOException ioe) {
+								JOptionPane.showMessageDialog(JPerfUI.this,
+										"Error while saving output: " + ioe.getMessage(), "Error",
+										JOptionPane.ERROR_MESSAGE);
 							}
 						}
 					}
@@ -1478,30 +1370,21 @@ public class JPerfUI extends JFrame
 		});
 	}
 
-	private boolean validateFormOptions()
-		throws Exception
-	{
+	private boolean validateFormOptions() throws Exception {
 		// form options string, but return if we are missing stuff
 		// clear it first
 		options = iperfCommand;
 
 		// determine if its a client or server
-		if (serverModeRadioButton.isSelected())
-		{
+		if (serverModeRadioButton.isSelected()) {
 			options += " -s";
-			if (clientLimit.getText().length() > 0 && lb_clientLimit.isSelected())
-			{
+			if (clientLimit.getText().length() > 0 && lb_clientLimit.isSelected()) {
 				options += " -c " + clientLimit.getText();
 			}
-		}
-		else
-		{
-			if (serverAddress.getText().length() > 0)
-			{
+		} else {
+			if (serverAddress.getText().length() > 0) {
 				options += " -c " + serverAddress.getText();
-			}
-			else
-			{
+			} else {
 				// set focus on server address
 				serverAddress.grabFocus();
 				throw new Exception("Please enter the host to connect to");
@@ -1509,117 +1392,92 @@ public class JPerfUI extends JFrame
 		}
 
 		// these options are the same for server and client
-		if (udpRadioButton.isSelected())
-		{
+		if (udpRadioButton.isSelected()) {
 			options += " -u";
 		}
-		if (simultaneousConnectionsNumber.isEnabled())
-		{
+		if (simultaneousConnectionsNumber.isEnabled()) {
 			options += " -P " + simultaneousConnectionsNumber.getValue();
-		}
-		else if (connectionsLimitNumber.isEnabled())
-		{
+		} else if (connectionsLimitNumber.isEnabled()) {
 			options += " -P " + connectionsLimitNumber.getValue();
 		}
 
 		options += " -i " + interval.getValue();
 
-		if (printMSS.isSelected() && printMSS.isEnabled())
-		{
+		if (printMSS.isSelected() && printMSS.isEnabled()) {
 			options += " -m";
 		}
-		if (serverPort.isEnabled())
-		{
+		if (serverPort.isEnabled()) {
 			options += " -p " + serverPort.getValue();
-		}
-		else if (listenPort.isEnabled())
-		{
+		} else if (listenPort.isEnabled()) {
 			options += " -p " + listenPort.getValue();
 		}
-		if (lb_tcpWindowSize.isSelected() && tcpWindowSize.isEnabled())
-		{
-			options += " -w " + tcpWindowSize.getValue() + ((IperfUnit) tcpWindowSizeUnit.getSelectedItem()).getShortcut();
+		if (lb_tcpWindowSize.isSelected() && tcpWindowSize.isEnabled()) {
+			options += " -w " + tcpWindowSize.getValue()
+					+ ((IperfUnit) tcpWindowSizeUnit.getSelectedItem()).getShortcut();
+		} else if (lb_udpBufferSize.isSelected() && udpBufferSize.isEnabled()) {
+			options += " -w " + udpBufferSize.getValue()
+					+ ((IperfUnit) udpBufferSizeUnit.getSelectedItem()).getShortcut();
 		}
-		else if (lb_udpBufferSize.isSelected() && udpBufferSize.isEnabled())
-		{
-			options += " -w " + udpBufferSize.getValue() + ((IperfUnit) udpBufferSizeUnit.getSelectedItem()).getShortcut();
-		}
-		if (bindhost.getText().length() > 0)
-		{
+		if (bindhost.getText().length() > 0) {
 			options += " -B " + bindhost.getText();
 		}
-		if (lb_mss.isSelected() && mss.isEnabled())
-		{
+		if (lb_mss.isSelected() && mss.isEnabled()) {
 			options += " -M " + mss.getValue() + ((IperfUnit) mssUnit.getSelectedItem()).getShortcut();
 		}
-		if (tcpNoDelay.isSelected() && tcpNoDelay.isEnabled())
-		{
+		if (tcpNoDelay.isSelected() && tcpNoDelay.isEnabled()) {
 			options += " -N";
 		}
-		if (ipv6.isSelected() && ipv6.isEnabled())
-		{
+		if (ipv6.isSelected() && ipv6.isEnabled()) {
 			options += " -V";
 		}
-		if (lb_tcpBufferLength.isSelected() && tcpBufferLength.isEnabled())
-		{
-			options += " -l " + tcpBufferLength.getValue() + ((IperfUnit) tcpBufferSizeUnit.getSelectedItem()).getShortcut();
+		if (lb_tcpBufferLength.isSelected() && tcpBufferLength.isEnabled()) {
+			options += " -l " + tcpBufferLength.getValue()
+					+ ((IperfUnit) tcpBufferSizeUnit.getSelectedItem()).getShortcut();
+		} else if (lb_udpPacketSize.isSelected() && udpPacketSize.isEnabled()) {
+			options += " -l " + udpPacketSize.getValue()
+					+ ((IperfUnit) udpPacketSizeUnit.getSelectedItem()).getShortcut();
 		}
-		else if (lb_udpPacketSize.isSelected() && udpPacketSize.isEnabled())
-		{
-			options += " -l " + udpPacketSize.getValue() + ((IperfUnit) udpPacketSizeUnit.getSelectedItem()).getShortcut();
-		}
-		if (compatibilityMode.isSelected() && compatibilityMode.isEnabled())
-		{
+		if (compatibilityMode.isSelected() && compatibilityMode.isEnabled()) {
 			options += " -C";
 		}
 
 		// do format
 		options += " -f " + ((IperfUnit) formatList.getSelectedItem()).getShortcut();
 
-		if (udpBandwidthUnit.isEnabled() && udpBandwidth.isEnabled())
-		{
-			options += " -b " + udpBandwidth.getValue() + ((IperfSpeedUnit) udpBandwidthUnit.getSelectedItem()).getUnit();
+		if (udpBandwidthUnit.isEnabled() && udpBandwidth.isEnabled()) {
+			options += " -b " + udpBandwidth.getValue()
+					+ ((IperfSpeedUnit) udpBandwidthUnit.getSelectedItem()).getUnit();
 		}
 
-		if (transmit.isEnabled())
-		{
-			if (transmitBytesRadioButton.isSelected())
-			{
+		if (transmit.isEnabled()) {
+			if (transmitBytesRadioButton.isSelected()) {
 				options += " -n " + transmit.getValue();
-			}
-			else if (transmitSecondsRadioButton.isSelected())
-			{
+			} else if (transmitSecondsRadioButton.isSelected()) {
 				options += " -t " + transmit.getValue();
 			}
 		}
 
-		if (dualMode.isSelected() && dualMode.isEnabled())
-		{
+		if (dualMode.isSelected() && dualMode.isEnabled()) {
 			options += " -d";
 		}
-		if (tradeMode.isSelected() && tradeMode.isEnabled())
-		{
+		if (tradeMode.isSelected() && tradeMode.isEnabled()) {
 			options += " -r";
 		}
-		if (((dualMode.isSelected() && dualMode.isEnabled()) || (tradeMode.isSelected() && tradeMode.isEnabled())) && testPort.isEnabled())
-		{
+		if (((dualMode.isSelected() && dualMode.isEnabled()) || (tradeMode.isSelected() && tradeMode.isEnabled()))
+				&& testPort.isEnabled()) {
 			options += " -L " + testPort.getValue();
 		}
 
-		if (TTL.isEnabled())
-		{
+		if (TTL.isEnabled()) {
 			options += " -T " + TTL.getValue();
 		}
-		if ((TosOption) tos.getSelectedItem() != TosOption.NONE)
-		{
+		if ((TosOption) tos.getSelectedItem() != TosOption.NONE) {
 			options += " -S " + ((TosOption) tos.getSelectedItem()).getCode();
 		}
 		// check if file exists
-		if (representativeFile.getText().length() > 0 && representativeFile.isEnabled())
-		{
+		if (representativeFile.getText().length() > 0 && representativeFile.isEnabled()) {
 			File f = new File(representativeFile.getText());
-			if (!f.exists())
-			{
+			if (!f.exists()) {
 				// set focus on representative file field
 				representativeFile.grabFocus();
 				throw new Exception("The file you selected does not exist");
@@ -1629,46 +1487,46 @@ public class JPerfUI extends JFrame
 		return true;
 	}
 
-	private void createAbout()
-	{
+	private void createAbout() {
 		aboutPanel = new JPerfAboutPanel(version);
 		aboutPanel.setPreferredSize(new Dimension(450, 350));
 	}
 
 	// KeyListener methods
-	public void keyPressed(KeyEvent e)
-	{
+	public void keyPressed(KeyEvent e) {
 	}
 
-	public void keyReleased(KeyEvent e)
-	{
+	public void keyReleased(KeyEvent e) {
 		updateIperfCommandLabel();
 	}
 
-	public void keyTyped(KeyEvent e)
-	{
+	public void keyTyped(KeyEvent e) {
 	}
 
 	// ChangeListener methods
-	public void stateChanged(ChangeEvent e)
-	{
+	public void stateChanged(ChangeEvent e) {
 		updateIperfCommandLabel();
 	}
 
-	public void windowActivated(WindowEvent arg0) {}
+	public void windowActivated(WindowEvent arg0) {
+	}
 
-	public void windowClosed(WindowEvent arg0) {}
+	public void windowClosed(WindowEvent arg0) {
+	}
 
-	public void windowClosing(WindowEvent arg0) 
-	{
+	public void windowClosing(WindowEvent arg0) {
 		stopIperf.doClick();
 	}
 
-	public void windowDeactivated(WindowEvent arg0) {}
+	public void windowDeactivated(WindowEvent arg0) {
+	}
 
-	public void windowDeiconified(WindowEvent arg0) {}
+	public void windowDeiconified(WindowEvent arg0) {
+	}
 
-	public void windowIconified(WindowEvent arg0) {}
+	public void windowIconified(WindowEvent arg0) {
+	}
 
-	public void windowOpened(WindowEvent arg0) {}
+	public void windowOpened(WindowEvent arg0) {
+	}
 }

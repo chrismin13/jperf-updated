@@ -17,38 +17,32 @@ import javax.swing.JPanel;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 
-public abstract class AbstractChartPanel extends JPanel
-{
+public abstract class AbstractChartPanel extends JPanel {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6818659991029126126L;
-	protected JFreeChart	jFreeChart;
-	protected ChartPanel	chartPanel;
+	protected JFreeChart jFreeChart;
+	protected ChartPanel chartPanel;
 
-	public AbstractChartPanel()
-	{
+	public AbstractChartPanel() {
 		init();
 	}
 
-	private void init()
-	{
+	private void init() {
 		// layout configuration
 		this.setLayout(new BorderLayout());
 	}
-	
-	public void setLowQuality()
-	{
+
+	public void setLowQuality() {
 		jFreeChart.getRenderingHints().clear();
 	}
-	
-	public ChartPanel getChartPanel()
-	{
+
+	public ChartPanel getChartPanel() {
 		return chartPanel;
 	}
 
-	public JFreeChart getJFreeChart()
-	{
+	public JFreeChart getJFreeChart() {
 		return jFreeChart;
 	}
 }
