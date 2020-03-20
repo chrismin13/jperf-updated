@@ -80,7 +80,6 @@ public class JPerfUI extends JFrame implements ActionListener, KeyListener, Chan
 
 	// Panels
 	private JSplitPane centerPanel;
-	private JTabbedPane tabbedPane;
 	private JScrollPane outputScrollPane;
 	private JTextArea output;
 
@@ -1094,12 +1093,10 @@ public class JPerfUI extends JFrame implements ActionListener, KeyListener, Chan
 		if (outputPanel == null) {
 			outputPanel = new JPanel(new BorderLayout());
 
-			tabbedPane = new JTabbedPane();
 			output = new JTextArea();
 			output.setWrapStyleWord(false);
 			outputScrollPane = new JScrollPane(output);
-			tabbedPane.addTab("Output", null, outputScrollPane, "Iperf Output");
-			outputPanel.add(tabbedPane, BorderLayout.CENTER);
+			outputPanel.add(outputScrollPane, BorderLayout.CENTER);
 
 			// add output control buttons
 			JPanel outputButtonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
