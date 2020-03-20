@@ -10,6 +10,7 @@
 
 package net.nlanr.jperf.ui.chart;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -19,8 +20,6 @@ import java.util.HashMap;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-import net.nlanr.jperf.core.Measurement;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -33,6 +32,8 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+
+import net.nlanr.jperf.core.Measurement;
 
 public class IPerfChartPanel extends AbstractChartPanel implements Runnable {
 	/**
@@ -118,10 +119,12 @@ public class IPerfChartPanel extends AbstractChartPanel implements Runnable {
 
 			bandwidthCollection.addSeries(data.bandwidthSeries);
 			bandwidthRenderer.setSeriesPaint(bandwidthCollection.getSeriesCount() - 1, data.seriesColor);
+			bandwidthRenderer.setSeriesStroke(bandwidthCollection.getSeriesCount() - 1, new BasicStroke(3.0f));
 
 			if (isServerMode) {
 				jitterCollection.addSeries(data.jitterSeries);
 				jitterRenderer.setSeriesPaint(jitterCollection.getSeriesCount() - 1, data.seriesColor);
+				jitterRenderer.setSeriesStroke(jitterCollection.getSeriesCount() - 1, new BasicStroke(3.0f));
 			}
 
 			panelTextStats.add(data.seriesLabel);
